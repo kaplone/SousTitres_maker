@@ -3,17 +3,23 @@ package application;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import org.xml.sax.SAXException;
 
 import static org.joox.JOOX.*;
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -22,6 +28,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import models.Espace;
 import models.Mot;
 
 
@@ -37,7 +44,15 @@ public class SousTitres_controller implements Initializable {
 	@FXML
 	private ImageView imageview;
 	
+	private DoubleProperty point_d_entree;
+	private double bourage;
+	
+	private Espace labelCourant;
+	
 	private final int LONGUEUR_LIGNE_MAX = 60;
+	
+	private ObservableList<Label> mots_observables ;
+	private ArrayList<Label> mots ;
 	
 	
 	
@@ -48,7 +63,7 @@ public class SousTitres_controller implements Initializable {
 	
     public void onMotEnter(MouseEvent me){
 		
-		((Label)me.getSource()).setStyle("-fx-font-size:25; -fx-background-color: #008800 ;");
+		((Label)me.getSource()).setStyle("-fx-font-size:25; -fx-background-color: #dddddd ;");
 	}
     
     public void onMotExit(MouseEvent me){
@@ -56,29 +71,105 @@ public class SousTitres_controller implements Initializable {
     	((Label)me.getSource()).setStyle("-fx-font-size:25; -fx-background-color: #eeeeee;");
 	}
     
+    public void defaire(){
+    	labelCourant.setPermanent(false);
+    	labelCourant.setText(" ");
+    	labelCourant.setPadding(new Insets(0, 0, 0, 0));
+    	labelCourant.setOnMouseClicked(a -> onEspaceSelect(a));
+    	labelCourant.setOnMouseEntered(a -> onEspaceEnter(a));
+    	labelCourant.setOnMouseExited(a -> onEspaceExit(a));
+    	
+    	mots.remove(mots.indexOf(labelCourant) + 1);
+    	mots_observables.clear();
+    	mots_observables.addAll(mots);
+    }
+    
     public void onEspaceSelect(MouseEvent me){
-    	((Label)me.getSource()).setStyle("-fx-font-size:25; -fx-background-color: #cccccc;");
+    	
+    	labelCourant.setPermanent(true);
+    	labelCourant.setText("][");
+    	labelCourant.setPadding(new Insets(0, 0, 0, 0));
+    	labelCourant.setStyle("-fx-font-size:25; -fx-text-fill: #aaaaee");
+    	
+    	Label padding = new Label("....");
+    	padding.setPadding(new Insets(0, bourage - 20, 0, 0));
+    	padding.setStyle("-fx-font-size:25; -fx-text-fill: #777777");
+    	padding.setVisible(true);
+    	
+    	System.out.println(bourage);
+    	
+    	mots.add(mots.indexOf(labelCourant), padding);
+    	
+    	System.out.println(mots.size());
+
+    	mots_observables.clear();
+    	mots_observables.addAll(mots);
+    	
+    	labelCourant.setOnMouseClicked(a -> defaire());
+
     }
     public void onEspaceEnter(MouseEvent me){
-    	((Label)me.getSource()).setStyle("-fx-font-size:25; -fx-background-color: #000000;");
+    	
+    	labelCourant = ((Espace)me.getSource());
+    	
+    	if (! labelCourant.isPermanent()){
+    	
+	    	point_d_entree.set(me.getSceneX());
+	    	bourage = 896 - (me.getSceneX() - 385) - 20;	    	
+	    	labelCourant.setPadding(new Insets(0, bourage, 0, 0));
+    	}
     }
     public void onEspaceExit(MouseEvent me){
-    	((Label)me.getSource()).setStyle("-fx-font-size:25; -fx-background-color: #eeeeee;");
+    	
+    	if (labelCourant != null && ! labelCourant.isPermanent()){
+    		((Espace)me.getSource()).setPadding(new Insets(0, 0, 0, 0));
+    	}
+        
+        labelCourant = null;
+    }
+    
+    public void onMouseMove(MouseEvent me){
+    	
+    	if (labelCourant != null && ! labelCourant.isPermanent() && me.getSceneX() - point_d_entree.get() > 8){
+    		labelCourant.setPadding(new Insets(0, 0, 0, 0));
+    		labelCourant = null;
+    	}
     }
 	
 	public void initialize(URL location, ResourceBundle resources) {
 		
+		point_d_entree = new SimpleDoubleProperty();
 		
+//		flowpane.addListener(new ChangeListener<MouseEvent>() {
+//
+//			@Override
+//			public void changed(ObservableValue<? extends MouseEvent> observable, MouseEvent oldValue,
+//					MouseEvent newValue) {
+//				
+//				if (newValue.getSceneX() - point_d_entree.get() > 20){
+//					
+//				}
+//				
+//			}
+//
+//
+//		});
 		
 		mediaview.setMediaPlayer(new MediaPlayer(new Media("file:///home/autor/Main_18H39_vGood.mp4")));
 		imageview.setImage(new Image("file:///home/autor/degrade.svg"));
 		imageview.toFront();
 	
-		ObservableList<Label> mots = FXCollections.observableArrayList();
+		mots_observables = FXCollections.observableArrayList();
+		mots = new ArrayList<>();
 		
 		try {
 			$(new File("/mnt/nfs_public/pour David/TRANSCRIPTION/vocapia/bcm.xml")).find("Word")
 			.each(ctx -> {
+				
+				if ($(ctx).text().startsWith(" ")){
+					Espace espace = new Espace(this);
+					mots.add(espace);
+				}
 				
 				Mot m = new Mot($(ctx).text().trim(),
 						        Double.parseDouble($(ctx).attr("stime")),
@@ -92,17 +183,6 @@ public class SousTitres_controller implements Initializable {
 				m.setOnMouseExited(a -> onMotExit(a));
 				
 				mots.add(m);
-				
-				if (m.isEspace()){
-					Label espace = new Label(" ");
-					espace.setStyle("-fx-font-size:25; -fx-background-color: #eeeeee;");
-					
-					espace.setOnMouseClicked(a -> onEspaceSelect(a));
-					espace.setOnMouseEntered(a -> onEspaceEnter(a));
-					espace.setOnMouseExited(a -> onEspaceExit(a));
-					
-					mots.add(espace);
-				}
 
 				});
 		} catch (SAXException | IOException e) {
@@ -110,9 +190,9 @@ public class SousTitres_controller implements Initializable {
 			e.printStackTrace();
 		}
 		
-		System.out.println(mots.size());
+		mots_observables.addAll(mots);
 		
-		flowpane.getChildren().addAll(mots);
+		flowpane.getChildren().addAll(mots_observables);
 	}
 
 }

@@ -9,9 +9,8 @@ public class Mot extends Label{
 	private String contenu;
 	private double debut;
 	private double duree;
-	private boolean espace;	
-	
-	
+	private boolean espace;
+		
 	public Mot(String contenu, double debut, double duree, boolean espace) {
 		super();
 		this.contenu = contenu;
