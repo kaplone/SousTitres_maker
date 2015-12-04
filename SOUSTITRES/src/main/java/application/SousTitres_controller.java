@@ -54,7 +54,7 @@ public class SousTitres_controller implements Initializable {
 	private ObservableList<Label> mots_observables ;
 	private ArrayList<Label> mots ;
 	
-	
+	private int index_label;
 	
 	public void onMotSelect(MouseEvent me){
 		
@@ -82,6 +82,9 @@ public class SousTitres_controller implements Initializable {
     	mots.remove(mots.indexOf(labelCourant) + 1);
     	mots_observables.clear();
     	mots_observables.addAll(mots);
+    	
+    	flowpane.getChildren().clear();
+    	flowpane.getChildren().addAll(mots_observables);
     }
     
     public void onEspaceSelect(MouseEvent me){
@@ -91,19 +94,24 @@ public class SousTitres_controller implements Initializable {
     	labelCourant.setPadding(new Insets(0, 0, 0, 0));
     	labelCourant.setStyle("-fx-font-size:25; -fx-text-fill: #aaaaee");
     	
-    	Label padding = new Label("....");
+    	Label padding = new Label("");
     	padding.setPadding(new Insets(0, bourage - 20, 0, 0));
     	padding.setStyle("-fx-font-size:25; -fx-text-fill: #777777");
     	padding.setVisible(true);
     	
-    	System.out.println(bourage);
+//    	System.out.println(bourage);
     	
-    	mots.add(mots.indexOf(labelCourant), padding);
+    	index_label = mots.indexOf(labelCourant);
     	
-    	System.out.println(mots.size());
+    	mots.add(index_label + 1, padding);
 
     	mots_observables.clear();
     	mots_observables.addAll(mots);
+    	
+    	flowpane.getChildren().clear();
+    	flowpane.getChildren().addAll(mots_observables);
+    	
+    	labelCourant = (Espace) mots.get(index_label);
     	
     	labelCourant.setOnMouseClicked(a -> defaire());
 
