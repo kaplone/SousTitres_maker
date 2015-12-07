@@ -25,11 +25,14 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaPlayer.Status;
 import javafx.scene.media.MediaView;
 import models.Espace;
 import models.Mot;
+import utils.MediaControl;
 
 
 public class SousTitres_controller implements Initializable {
@@ -37,12 +40,15 @@ public class SousTitres_controller implements Initializable {
 	
 	@FXML
 	private FlowPane flowpane;
-	
 	@FXML
-	private MediaView mediaview;
+	private Pane pane;
 	
 	@FXML
 	private ImageView imageview;
+	
+	private Media media;
+	private MediaPlayer mediaplayer;
+	private MediaControl mediaControl;
 	
 	private DoubleProperty point_d_entree;
 	private double bourage;
@@ -123,7 +129,7 @@ public class SousTitres_controller implements Initializable {
     	if (! labelCourant.isPermanent()){
     	
 	    	point_d_entree.set(me.getSceneX());
-	    	bourage = 896 - (me.getSceneX() - 385) - 20;	    	
+	    	bourage = 896 - (me.getSceneX() - 1000) - 20;	    	
 	    	labelCourant.setPadding(new Insets(0, bourage, 0, 0));
     	}
     }
@@ -143,6 +149,20 @@ public class SousTitres_controller implements Initializable {
     		labelCourant = null;
     	}
     }
+    
+	public void playerStatus(MouseEvent me){
+		
+		if (mediaplayer.getStatus().equals(Status.PLAYING)){
+			
+			mediaplayer.pause();
+			
+		}
+		else {
+			mediaplayer.play();
+			System.out.println(mediaplayer.getCurrentTime());
+		}
+		
+	}
 	
 	public void initialize(URL location, ResourceBundle resources) {
 		
@@ -163,9 +183,18 @@ public class SousTitres_controller implements Initializable {
 //
 //		});
 		
-		mediaview.setMediaPlayer(new MediaPlayer(new Media("file:///home/autor/Main_18H39_vGood.mp4")));
-		imageview.setImage(new Image("file:///home/autor/degrade.svg"));
-		imageview.toFront();
+		
+		media = new Media("file:///home/autor/Main_18H39_vGood.mp4");
+		mediaplayer = new MediaPlayer(media);
+		mediaControl = new MediaControl(mediaplayer);
+		
+		mediaControl.setOnMouseClicked(a -> playerStatus(a));
+		mediaControl.setPadding(new Insets(150, 20, 80, 20));
+		
+		pane.getChildren().add(mediaControl);
+		
+//		imageview.setImage(new Image("file:///home/autor/degrade.svg"));
+//		imageview.toFront();
 	
 		mots_observables = FXCollections.observableArrayList();
 		mots = new ArrayList<>();

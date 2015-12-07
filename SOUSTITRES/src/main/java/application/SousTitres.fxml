@@ -4,16 +4,15 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.media.*?>
 
 <BorderPane prefHeight="600.0" prefWidth="1290.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.SousTitres_controller">
 <center>
 <ScrollPane hbarPolicy="NEVER" prefViewportHeight="600.0" prefViewportWidth="896.0" vbarPolicy="ALWAYS">
-<content><FlowPane fx:id="flowpane" maxWidth="896.0" minWidth="700.0" onMouseMoved="#onMouseMove" prefHeight="600.0" prefWidth="896.0" prefWrapLength="700.0" BorderPane.alignment="CENTER" />
+<content><FlowPane fx:id="flowpane" maxWidth="896.0" minWidth="896.0" onMouseMoved="#onMouseMove" prefHeight="600.0" prefWidth="896.0" prefWrapLength="700.0" BorderPane.alignment="CENTER" />
 </content>
 </ScrollPane>
 </center>
-<left><Pane prefHeight="600.0" prefWidth="385.0" BorderPane.alignment="CENTER">
-<children><ImageView fx:id="imageview" fitHeight="150.0" fitWidth="400.0" layoutY="359.0" pickOnBounds="true" preserveRatio="true" /><MediaView fx:id="mediaview" fitHeight="200.0" fitWidth="400.0" layoutX="6.0" layoutY="259.0" />
+<left><Pane fx:id="pane" minWidth="1000.0" prefHeight="600.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
+<children><ImageView fx:id="imageview" fitHeight="150.0" fitWidth="400.0" layoutY="359.0" pickOnBounds="true" preserveRatio="true" />
 </children></Pane>
 </left></BorderPane>
