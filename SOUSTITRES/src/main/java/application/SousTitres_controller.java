@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.xml.sax.SAXException;
@@ -62,6 +64,10 @@ public class SousTitres_controller implements Initializable {
 	
 	private int index_label;
 	
+	private Map<String, Mot> map_des_mots;
+	
+	private Mot mot_lu;
+	
 	public void onMotSelect(MouseEvent me){
 		
 		System.out.println(me.getSource());
@@ -76,6 +82,18 @@ public class SousTitres_controller implements Initializable {
 
     	((Label)me.getSource()).setStyle("-fx-font-size:25; -fx-background-color: #eeeeee;");
 	}
+    
+    public void mot_lecture(Mot lu){
+    	
+    	lu.setStyle("-fx-font-size:25; -fx-background-color: #dddddd ;");
+    	
+    	if (mot_lu != null) {
+    		mot_lu.setStyle("-fx-font-size:25; -fx-background-color: #eeeeee;");
+    	}
+    	
+    	
+    	mot_lu = lu;
+    }
     
     public void defaire(){
     	labelCourant.setPermanent(false);
@@ -186,7 +204,7 @@ public class SousTitres_controller implements Initializable {
 		
 		media = new Media("file:///home/autor/Main_18H39_vGood.mp4");
 		mediaplayer = new MediaPlayer(media);
-		mediaControl = new MediaControl(mediaplayer);
+		mediaControl = new MediaControl(mediaplayer, this);
 		
 		mediaControl.setOnMouseClicked(a -> playerStatus(a));
 		mediaControl.setPadding(new Insets(150, 20, 80, 20));
@@ -195,6 +213,8 @@ public class SousTitres_controller implements Initializable {
 		
 //		imageview.setImage(new Image("file:///home/autor/degrade.svg"));
 //		imageview.toFront();
+		
+		map_des_mots = new HashMap<>();
 	
 		mots_observables = FXCollections.observableArrayList();
 		mots = new ArrayList<>();
@@ -220,6 +240,7 @@ public class SousTitres_controller implements Initializable {
 				m.setOnMouseExited(a -> onMotExit(a));
 				
 				mots.add(m);
+				map_des_mots.put($(ctx).attr("stime").replace('.', ','), m);
 
 				});
 		} catch (SAXException | IOException e) {
@@ -231,5 +252,15 @@ public class SousTitres_controller implements Initializable {
 		
 		flowpane.getChildren().addAll(mots_observables);
 	}
+
+	public Map<String, Mot> getMap_des_mots() {
+		return map_des_mots;
+	}
+
+	public void setMap_des_mots(Map<String, Mot> map_des_mots) {
+		this.map_des_mots = map_des_mots;
+	}
+	
+	
 
 }

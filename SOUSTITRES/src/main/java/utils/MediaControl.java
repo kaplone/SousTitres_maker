@@ -32,6 +32,7 @@
 
 package utils;
 
+import application.SousTitres_controller;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -65,7 +66,7 @@ public class MediaControl extends BorderPane {
     private Slider volumeSlider;
     private HBox mediaBar;
 
-    public MediaControl(final MediaPlayer mp) {
+    public MediaControl(final MediaPlayer mp, SousTitres_controller st) {
         this.mp = mp;
         setStyle("-fx-background-color: #bfc2c7;");
         mediaView = new MediaView(mp);
@@ -167,6 +168,10 @@ public class MediaControl extends BorderPane {
         timeSlider.valueProperty().addListener(new InvalidationListener() {
             public void invalidated(Observable ov) {
                 if (timeSlider.isValueChanging()) {
+                	
+                	System.out.println(String.format("%.02f" ,duration.multiply(timeSlider.getValue() / 100.0).toSeconds()));
+                	st.mot_lecture(st.getMap_des_mots().get(String.format("%.02f" ,duration.multiply(timeSlider.getValue() / 100.0).toSeconds())));
+                	               	
                     // multiply duration by percentage calculated by slider position
                     mp.seek(duration.multiply(timeSlider.getValue() / 100.0));
                 }
