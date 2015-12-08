@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.TreeMap;
 
 import org.xml.sax.SAXException;
 
@@ -214,13 +215,14 @@ public class SousTitres_controller implements Initializable {
 //		imageview.setImage(new Image("file:///home/autor/degrade.svg"));
 //		imageview.toFront();
 		
-		map_des_mots = new HashMap<>();
+		map_des_mots = new TreeMap<>();
+		
 	
 		mots_observables = FXCollections.observableArrayList();
 		mots = new ArrayList<>();
 		
 		try {
-			$(new File("/mnt/nfs_public/pour David/TRANSCRIPTION/vocapia/bcm.xml")).find("Word")
+			$(new File("/mnt/nfs_public/pour David/TRANSCRIPTION/vocapia/18h39_sous_titres.xml")).find("Word")
 			.each(ctx -> {
 				
 				if ($(ctx).text().startsWith(" ")){
@@ -241,6 +243,13 @@ public class SousTitres_controller implements Initializable {
 				
 				mots.add(m);
 				map_des_mots.put($(ctx).attr("stime").replace('.', ','), m);
+				
+				for (double i = 0.01d; i < Double.parseDouble($(ctx).attr("dur")); i+=0.01){
+					
+					map_des_mots.put(String.format("%.02f", Double.parseDouble($(ctx).attr("stime")) + i ).replace('.', ','), m);
+				}
+				
+				
 
 				});
 		} catch (SAXException | IOException e) {
