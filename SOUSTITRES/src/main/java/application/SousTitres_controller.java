@@ -86,13 +86,11 @@ public class SousTitres_controller implements Initializable {
     
     public void mot_lecture(Mot lu){
     	
-    	lu.setStyle("-fx-font-size:25; -fx-background-color: #dddddd ;");
+    	lu.setStyle("-fx-font-size:25; -fx-background-color: #aa88dd ;");
     	
     	if (mot_lu != null) {
     		mot_lu.setStyle("-fx-font-size:25; -fx-background-color: #eeeeee;");
     	}
-    	
-    	
     	mot_lu = lu;
     }
     

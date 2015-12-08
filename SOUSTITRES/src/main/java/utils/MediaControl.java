@@ -111,7 +111,7 @@ public class MediaControl extends BorderPane {
         });
         mp.currentTimeProperty().addListener(new InvalidationListener() {
             public void invalidated(Observable ov) {
-                updateValues();
+                updateValues(st);
             }
         });
 
@@ -136,7 +136,7 @@ public class MediaControl extends BorderPane {
         mp.setOnReady(new Runnable() {
             public void run() {
                 duration = mp.getMedia().getDuration();
-                updateValues();
+                updateValues(st);
             }
         });
 
@@ -170,8 +170,12 @@ public class MediaControl extends BorderPane {
                 if (timeSlider.isValueChanging()) {
                 	
                 	System.out.println(String.format("%.02f" ,duration.multiply(timeSlider.getValue() / 100.0).toSeconds()));
-                	st.mot_lecture(st.getMap_des_mots().get(String.format("%.02f" ,duration.multiply(timeSlider.getValue() / 100.0).toSeconds())));
-                	               	
+                	try {
+                		st.mot_lecture(st.getMap_des_mots().get(String.format("%.02f" ,duration.multiply(timeSlider.getValue() / 100.0).toSeconds())));
+                	}
+                	catch (NullPointerException npe){
+                		
+                	}               	
                     // multiply duration by percentage calculated by slider position
                     mp.seek(duration.multiply(timeSlider.getValue() / 100.0));
                 }
@@ -206,7 +210,7 @@ public class MediaControl extends BorderPane {
         setBottom(mediaBar);
     }
 
-    protected void updateValues() {
+    protected void updateValues(SousTitres_controller st) {
         if (playTime != null && timeSlider != null && volumeSlider != null) {
             Platform.runLater(new Runnable() {
                 public void run() {
@@ -216,6 +220,14 @@ public class MediaControl extends BorderPane {
                     if (!timeSlider.isDisabled()
                             && duration.greaterThan(Duration.ZERO)
                             && !timeSlider.isValueChanging()) {
+                    	
+                    	try {
+                    		st.mot_lecture(st.getMap_des_mots().get(String.format("%.02f" ,duration.multiply(timeSlider.getValue() / 100.0).toSeconds())));
+                    	}
+                    	catch (NullPointerException npe){
+                    		
+                    	}
+                    	
                         timeSlider.setValue(currentTime.divide(duration).toMillis()
                                 * 100.0);
                     }
