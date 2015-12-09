@@ -1,40 +1,47 @@
 package models;
 
+import java.util.stream.Collectors;
+
 import javafx.collections.ObservableList;
 import javafx.scene.control.Label;
 
 public class Ligne {
+
+	private ObservableList<Mot> contenu;
 	
-	private double debut;
-	private double duree;
-	private ObservableList<Label> contenu;
-	
-	public Ligne(double debut, double duree, ObservableList<Label> contenu) {
+	public Ligne(ObservableList<Mot> contenu) {
 		super();
-		this.debut = debut;
-		this.duree = duree;
 		this.contenu = contenu;
+	}
+	
+	public ObservableList<Mot> getContenu() {
+		return contenu;
 	}
 	
 	public double getDebut() {
-		return debut;
+		return contenu.get(0).getDebut();
 	}
-	public void setDebut(double debut) {
-		this.debut = debut;
-	}
-	public double getDuree() {
-		return duree;
-	}
-	public void setDuree(double duree) {
-		this.duree = duree;
-	}
-	public ObservableList<Label> getContenu() {
-		return contenu;
-	}
-	public void setContenu(ObservableList<Label> contenu) {
+	
+	public void setContenu(ObservableList<Mot> contenu) {
 		this.contenu = contenu;
 	}
 	
+	@Override
+	public String toString() {
+		
+		String ligne = "";
+		
+		for (Mot m : contenu){
+			ligne += m.getText();
+		}
+		return ligne;
+	}	
 	
-
+	public double getDuree() {
+		
+		Mot dernier = contenu.get(contenu.size() -1);
+ 
+		return dernier.getDebut()+ dernier.getDuree() - this.getDebut();
+		
+	}
 }

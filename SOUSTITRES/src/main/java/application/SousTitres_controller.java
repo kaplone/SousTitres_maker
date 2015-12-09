@@ -201,22 +201,6 @@ public class SousTitres_controller implements Initializable {
 		
 		point_d_entree = new SimpleDoubleProperty();
 		
-//		flowpane.addListener(new ChangeListener<MouseEvent>() {
-//
-//			@Override
-//			public void changed(ObservableValue<? extends MouseEvent> observable, MouseEvent oldValue,
-//					MouseEvent newValue) {
-//				
-//				if (newValue.getSceneX() - point_d_entree.get() > 20){
-//					
-//				}
-//				
-//			}
-//
-//
-//		});
-		
-		
 		media = new Media("file:///home/autor/Main_18H39_vGood.mp4");
 		mediaplayer = new MediaPlayer(media);
 		mediaControl = new MediaControl(mediaplayer, this);
@@ -235,15 +219,10 @@ public class SousTitres_controller implements Initializable {
 		text_sous_titre.setVisible(true);
 		text_sous_titre.toFront();
 		text_sous_titre.textProperty().bind(phrase_affichee);
-		
-		
+			
 		pane.getChildren().add(text_sous_titre);
-		
-//		imageview.setImage(new Image("file:///home/autor/degrade.svg"));
-//		imageview.toFront();
-		
-		map_des_mots = new TreeMap<>();
-		
+
+		map_des_mots = new TreeMap<>();		
 	
 		mots_observables = FXCollections.observableArrayList();
 		mots = new ArrayList<>();
