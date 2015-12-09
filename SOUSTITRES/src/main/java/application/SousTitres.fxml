@@ -2,8 +2,9 @@
 
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.shape.*?>
 
 <BorderPane prefHeight="600.0" prefWidth="1290.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.SousTitres_controller">
 <center>
@@ -13,6 +14,15 @@
 </ScrollPane>
 </center>
 <left><Pane fx:id="pane" minWidth="1000.0" prefHeight="600.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
-<children><ImageView fx:id="imageview" fitHeight="150.0" fitWidth="400.0" layoutY="359.0" pickOnBounds="true" preserveRatio="true" />
+<children><Rectangle fx:id="degrade" height="197.0" layoutX="20.0" layoutY="493.0" opacity="0.65" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="960.0">
+<fill>
+<LinearGradient endX="0.5" endY="1.0" startX="0.5">
+<stops>
+<Stop color="#ffffff00" />
+<Stop color="#ffffff00" offset="0.00749063670411985" />
+<Stop color="#0d0000de" offset="1.0" />
+</stops>
+</LinearGradient>
+</fill></Rectangle>
 </children></Pane>
 </left></BorderPane>

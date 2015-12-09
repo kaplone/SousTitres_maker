@@ -14,8 +14,12 @@ import org.xml.sax.SAXException;
 import static org.joox.JOOX.*;
 
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableObjectValue;
+import javafx.beans.value.ObservableStringValue;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -33,6 +37,10 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
 import javafx.scene.media.MediaView;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import models.Espace;
 import models.Mot;
 import utils.MediaControl;
@@ -45,9 +53,9 @@ public class SousTitres_controller implements Initializable {
 	private FlowPane flowpane;
 	@FXML
 	private Pane pane;
-	
+
 	@FXML
-	private ImageView imageview;
+	private Rectangle degrade;
 	
 	private Media media;
 	private MediaPlayer mediaplayer;
@@ -68,6 +76,10 @@ public class SousTitres_controller implements Initializable {
 	private Map<String, Mot> map_des_mots;
 	
 	private Mot mot_lu;
+	
+	private Text text_sous_titre;
+	
+	private ObjectProperty<String> phrase_affichee; 
 	
 	public void onMotSelect(MouseEvent me){
 		
@@ -92,6 +104,8 @@ public class SousTitres_controller implements Initializable {
     		mot_lu.setStyle("-fx-font-size:25; -fx-background-color: #eeeeee;");
     	}
     	mot_lu = lu;
+    	
+    	phrase_affichee.set(lu.getText());
     }
     
     public void defaire(){
@@ -183,6 +197,8 @@ public class SousTitres_controller implements Initializable {
 	
 	public void initialize(URL location, ResourceBundle resources) {
 		
+		phrase_affichee = new SimpleObjectProperty<>();
+		
 		point_d_entree = new SimpleDoubleProperty();
 		
 //		flowpane.addListener(new ChangeListener<MouseEvent>() {
@@ -209,6 +225,19 @@ public class SousTitres_controller implements Initializable {
 		mediaControl.setPadding(new Insets(150, 20, 80, 20));
 		
 		pane.getChildren().add(mediaControl);
+		degrade.toFront();
+		
+		text_sous_titre = new Text("Sous titre ...");
+		text_sous_titre.setFont(Font.font("Lucida", 30.0));
+		text_sous_titre.setFill(Color.WHITE);
+		text_sous_titre.setLayoutX(100);
+		text_sous_titre.setLayoutY(630);
+		text_sous_titre.setVisible(true);
+		text_sous_titre.toFront();
+		text_sous_titre.textProperty().bind(phrase_affichee);
+		
+		
+		pane.getChildren().add(text_sous_titre);
 		
 //		imageview.setImage(new Image("file:///home/autor/degrade.svg"));
 //		imageview.toFront();

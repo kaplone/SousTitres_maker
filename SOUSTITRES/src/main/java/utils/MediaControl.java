@@ -169,7 +169,6 @@ public class MediaControl extends BorderPane {
             public void invalidated(Observable ov) {
                 if (timeSlider.isValueChanging()) {
                 	
-                	System.out.println(String.format("%.02f" ,duration.multiply(timeSlider.getValue() / 100.0).toSeconds()));
                 	try {
                 		st.mot_lecture(st.getMap_des_mots().get(String.format("%.02f" ,duration.multiply(timeSlider.getValue() / 100.0).toSeconds())));
                 	}
