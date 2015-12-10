@@ -4,10 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import org.xml.sax.SAXException;
 
@@ -17,38 +18,29 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableObjectValue;
-import javafx.beans.value.ObservableStringValue;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
-import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import models.Espace;
+import models.Ligne;
 import models.Mot;
 import utils.MediaControl;
 
-
 public class SousTitres_controller implements Initializable {
-	
-	
+		
 	@FXML
 	private FlowPane flowpane;
 	@FXML
@@ -66,14 +58,14 @@ public class SousTitres_controller implements Initializable {
 	
 	private Espace labelCourant;
 	
-	private final int LONGUEUR_LIGNE_MAX = 60;
-	
 	private ObservableList<Label> mots_observables ;
-	private ArrayList<Label> mots ;
+	private ArrayList<Mot> mots ;
+	private ArrayList<Ligne> lignes ;
 	
 	private int index_label;
 	
 	private Map<String, Mot> map_des_mots;
+	private Map<String, Ligne> map_des_lignes;
 	
 	private Mot mot_lu;
 	
@@ -81,9 +73,12 @@ public class SousTitres_controller implements Initializable {
 	
 	private ObjectProperty<String> phrase_affichee; 
 	
+	private boolean debut_texte = true;
+	
 	public void onMotSelect(MouseEvent me){
 		
 		System.out.println(me.getSource());
+		System.out.println(((Mot)me.getSource()).getLayoutX());
 	}
 	
     public void onMotEnter(MouseEvent me){
@@ -104,8 +99,11 @@ public class SousTitres_controller implements Initializable {
     		mot_lu.setStyle("-fx-font-size:25; -fx-background-color: #eeeeee;");
     	}
     	mot_lu = lu;
+    }
+    
+    public void ligne_lecture(Ligne lu){
     	
-    	phrase_affichee.set(lu.getText());
+    	phrase_affichee.set(lu.toString());
     }
     
     public void defaire(){
@@ -131,12 +129,10 @@ public class SousTitres_controller implements Initializable {
     	labelCourant.setPadding(new Insets(0, 0, 0, 0));
     	labelCourant.setStyle("-fx-font-size:25; -fx-text-fill: #aaaaee");
     	
-    	Label padding = new Label("");
+    	Mot padding = new Espace(this);
     	padding.setPadding(new Insets(0, bourage - 20, 0, 0));
     	padding.setStyle("-fx-font-size:25; -fx-text-fill: #777777");
     	padding.setVisible(true);
-    	
-//    	System.out.println(bourage);
     	
     	index_label = mots.indexOf(labelCourant);
     	
@@ -151,6 +147,40 @@ public class SousTitres_controller implements Initializable {
     	labelCourant = (Espace) mots.get(index_label);
     	
     	labelCourant.setOnMouseClicked(a -> defaire());
+    	
+    	Label l = labelCourant;
+    	int index_l = mots.indexOf(l);
+    	
+    	index_l -= 1 ;
+    	l = mots.get(index_l);
+
+    	
+    	while (l.getLayoutX() > 0){
+    		
+    		index_l -= 1 ;
+    		l = mots.get(index_l);
+    	}
+    	
+    	List<Mot> mots_ligne =  new ArrayList<>();
+    	for (int i = index_l; i < index_label; i++){
+    		mots_ligne.add(mots.get(i));
+    	}
+    	
+    	
+    	Ligne ligne = new Ligne(mots_ligne);
+	
+    	System.out.println(ligne.toString());
+    	System.out.println(ligne.getPremier_mot().getText() + " --> " + ligne.getDernier_mot().getText());
+    	System.out.println("début : " + ligne.getDebut());
+    	System.out.println(String.format("durée : %.02f", ligne.getDuree()));
+    	
+    	map_des_lignes.put(String.format("%.02f", ligne.getDebut()), ligne);
+		
+		for (double i = 0.01d; i < ligne.getDuree(); i+=0.01){
+			
+			map_des_lignes.put(String.format("%.02f", ligne.getDebut() + i ).replace('.', ','), ligne);
+		}
+    	
 
     }
     public void onEspaceEnter(MouseEvent me){
@@ -191,8 +221,7 @@ public class SousTitres_controller implements Initializable {
 		else {
 			mediaplayer.play();
 			System.out.println(mediaplayer.getCurrentTime());
-		}
-		
+		}	
 	}
 	
 	public void initialize(URL location, ResourceBundle resources) {
@@ -223,6 +252,7 @@ public class SousTitres_controller implements Initializable {
 		pane.getChildren().add(text_sous_titre);
 
 		map_des_mots = new TreeMap<>();		
+		map_des_lignes = new TreeMap<>();	
 	
 		mots_observables = FXCollections.observableArrayList();
 		mots = new ArrayList<>();
@@ -231,7 +261,10 @@ public class SousTitres_controller implements Initializable {
 			$(new File("/mnt/nfs_public/pour David/TRANSCRIPTION/vocapia/18h39_sous_titres.xml")).find("Word")
 			.each(ctx -> {
 				
-				if ($(ctx).text().startsWith(" ")){
+				if (debut_texte){
+					debut_texte = false;
+				}				
+				else if ($(ctx).text().startsWith(" ")){
 					Espace espace = new Espace(this);
 					mots.add(espace);
 				}
@@ -259,7 +292,6 @@ public class SousTitres_controller implements Initializable {
 
 				});
 		} catch (SAXException | IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -272,10 +304,15 @@ public class SousTitres_controller implements Initializable {
 		return map_des_mots;
 	}
 
-	public void setMap_des_mots(Map<String, Mot> map_des_mots) {
+	public void setMap_des_mots(Map<String, Mot> map_des_lignes) {
 		this.map_des_mots = map_des_mots;
 	}
 	
-	
+	public Map<String, Ligne> getMap_des_lignes() {
+		return map_des_lignes;
+	}
 
+	public void setMap_des_lignes(Map<String, Ligne> map_des_lignes) {
+		this.map_des_lignes = map_des_lignes;
+	}
 }

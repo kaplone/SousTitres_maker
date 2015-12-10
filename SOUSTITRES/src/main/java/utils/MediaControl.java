@@ -171,6 +171,7 @@ public class MediaControl extends BorderPane {
                 	
                 	try {
                 		st.mot_lecture(st.getMap_des_mots().get(String.format("%.02f" ,duration.multiply(timeSlider.getValue() / 100.0).toSeconds())));
+                		st.ligne_lecture(st.getMap_des_lignes().get(String.format("%.02f" ,duration.multiply(timeSlider.getValue() / 100.0).toSeconds())));
                 	}
                 	catch (NullPointerException npe){
                 		
@@ -222,6 +223,7 @@ public class MediaControl extends BorderPane {
                     	
                     	try {
                     		st.mot_lecture(st.getMap_des_mots().get(String.format("%.02f" ,duration.multiply(timeSlider.getValue() / 100.0).toSeconds())));
+                    		st.ligne_lecture(st.getMap_des_lignes().get(String.format("%.02f" ,duration.multiply(timeSlider.getValue() / 100.0).toSeconds())));
                     	}
                     	catch (NullPointerException npe){
                     		

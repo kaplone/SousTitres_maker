@@ -1,28 +1,29 @@
 package models;
 
-import java.util.stream.Collectors;
+import java.util.List;
 
 import javafx.collections.ObservableList;
 import javafx.scene.control.Label;
 
 public class Ligne {
 
-	private ObservableList<Mot> contenu;
-	
-	public Ligne(ObservableList<Mot> contenu) {
+	private List<Mot> contenu;
+
+	public Ligne(List<Mot> list) {
 		super();
-		this.contenu = contenu;
+		this.contenu = list;
 	}
 	
-	public ObservableList<Mot> getContenu() {
+	public List<Mot> getContenu() {
 		return contenu;
 	}
 	
 	public double getDebut() {
-		return contenu.get(0).getDebut();
+		
+		return getPremier_mot().getDebut();
 	}
 	
-	public void setContenu(ObservableList<Mot> contenu) {
+	public void setContenu(List<Mot> contenu) {
 		this.contenu = contenu;
 	}
 	
@@ -38,10 +39,18 @@ public class Ligne {
 	}	
 	
 	public double getDuree() {
-		
-		Mot dernier = contenu.get(contenu.size() -1);
  
-		return dernier.getDebut()+ dernier.getDuree() - this.getDebut();
+		return getDernier_mot().getDebut()+ getDernier_mot().getDuree() - this.getDebut();
 		
 	}
+
+	public Mot getPremier_mot() {
+		return contenu.get(0);
+	}
+
+	public Mot getDernier_mot() {
+		return contenu.get(contenu.size() -1);
+	}
+	
+	
 }

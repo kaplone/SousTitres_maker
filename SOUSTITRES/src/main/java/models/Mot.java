@@ -1,8 +1,6 @@
 package models;
 
-import javafx.event.Event;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
 
 public class Mot extends Label{
 	
