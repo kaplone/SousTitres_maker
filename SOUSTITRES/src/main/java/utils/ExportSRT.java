@@ -36,7 +36,35 @@ public class ExportSRT {
 		    	
 		    	String fin = (l.getDebut() + l.getDuree()) + "";
 		    	
-		    	String temporalite = String.format("00:%s --> 00:%s", debut, fin);
+		    	String debut_secondes;
+		    	String debut_minutes;
+		    	
+		    	String fin_secondes;
+		    	String fin_minutes;
+		    	
+		    	int debut_centiemes = Integer.parseInt(debut.split("\\.")[1].substring(0, 2));
+		    	
+		    	if (debut.split("\\.")[0].split(":").length > 1){		    	
+			    	debut_secondes = debut.split("\\.")[0].split(":")[1];
+			    	debut_minutes = debut.split("\\.")[0].split(":")[0];
+		    	}
+		    	else {
+		    		debut_secondes = debut.split("\\.")[0].split(":")[0];
+		    		debut_minutes = "00";
+		    	}
+		    	
+		    	int fin_centiemes = Integer.parseInt(fin.split("\\.")[1].substring(0, 2));
+		    	
+		    	if (fin.split("\\.")[0].split(":").length > 1){	
+		    	   fin_secondes = fin.split("\\.")[0].split(":")[1];
+		    	   fin_minutes = fin.split("\\.")[0].split(":")[0];
+		    	}
+		    	else {
+		    		fin_secondes = fin.split("\\.")[0].split(":")[0];
+			    	fin_minutes = "00";
+		    	}
+		    		
+		    	String temporalite = String.format("00:%s:%s.%03d --> 00:%s:%s.%03d", debut_minutes, debut_secondes, debut_centiemes, fin_minutes, fin_secondes, fin_centiemes);
 
 	    		fw.write(compteur + "");
 	    		fw.write(System.getProperty("line.separator"));
