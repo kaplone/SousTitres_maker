@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.lang.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.paint.*?>
@@ -25,4 +26,11 @@
 </LinearGradient>
 </fill></Rectangle>
 </children></Pane>
-</left></BorderPane>
+</left>
+<bottom><HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+<children><Button fx:id="export_button" mnemonicParsing="false" onAction="#onExport_button" text="exporter le SRT">
+<HBox.margin>
+<Insets right="50.0" />
+</HBox.margin></Button>
+</children></HBox>
+</bottom></BorderPane>

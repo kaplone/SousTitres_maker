@@ -23,6 +23,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
@@ -37,6 +38,7 @@ import javafx.scene.text.Text;
 import models.Espace;
 import models.Ligne;
 import models.Mot;
+import utils.ExportSRT;
 import utils.MediaControl;
 
 public class SousTitres_controller implements Initializable {
@@ -48,6 +50,9 @@ public class SousTitres_controller implements Initializable {
 
 	@FXML
 	private Rectangle degrade;
+	
+	@FXML
+	private Button export_button;
 	
 	private Media media;
 	private MediaPlayer mediaplayer;
@@ -74,6 +79,12 @@ public class SousTitres_controller implements Initializable {
 	private ObjectProperty<String> phrase_affichee; 
 	
 	private boolean debut_texte = true;
+	
+	public void onExport_button(){
+		
+		ExportSRT.export_srt_file(lignes);
+		
+	}
 	
 	public void onMotSelect(MouseEvent me){
 		
@@ -175,6 +186,7 @@ public class SousTitres_controller implements Initializable {
     	System.out.println(String.format("durée : %.02f", ligne.getDuree()));
     	
     	map_des_lignes.put(String.format("%.02f", ligne.getDebut()), ligne);
+    	lignes.add(ligne);
 		
 		for (double i = 0.01d; i < ligne.getDuree(); i+=0.01){
 			
@@ -225,6 +237,8 @@ public class SousTitres_controller implements Initializable {
 	}
 	
 	public void initialize(URL location, ResourceBundle resources) {
+		
+		lignes = new ArrayList<>();
 		
 		phrase_affichee = new SimpleObjectProperty<>();
 		

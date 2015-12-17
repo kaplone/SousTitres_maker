@@ -27,7 +27,4 @@ public class Espace extends Mot{
 	public void setPermanent(boolean permanent) {
 		this.permanent = permanent;
 	}
-	
-	
-
 }
