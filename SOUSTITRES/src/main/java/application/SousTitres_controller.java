@@ -38,6 +38,7 @@ import javafx.scene.text.Text;
 import models.Espace;
 import models.Ligne;
 import models.Mot;
+import utils.ExportASS;
 import utils.ExportSRT;
 import utils.MediaControl;
 
@@ -83,6 +84,7 @@ public class SousTitres_controller implements Initializable {
 	public void onExport_button(){
 		
 		ExportSRT.export_srt_file(lignes);
+		ExportASS.export_ass_file(lignes);
 		
 	}
 	

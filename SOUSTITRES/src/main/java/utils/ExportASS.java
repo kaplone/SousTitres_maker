@@ -1,6 +1,8 @@
 package utils;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,20 +11,32 @@ import java.util.stream.Collectors;
 
 import models.Ligne;
 
-public class ExportSRT {
+public class ExportASS {
 	
 	static String home =  System.getProperty("user.home");
-	static File settings_file = new File(home, "Desktop/test_2.srt");
+	static File ass_file = new File(home, "Desktop/test_2.ass");
 	static FileWriter fw = null;
 	
+	static File base_file = new File(home, "Desktop/base.ass");
+	static FileReader fr = null;
 	
 	
-	public static void export_srt_file(ArrayList<Ligne> lignes){
-		
-		int compteur = 1;
-		
+	
+	public static void export_ass_file(ArrayList<Ligne> lignes){
+
 		try {
-		    fw = new FileWriter(settings_file);
+		    fw = new FileWriter(ass_file);
+		    fr = new FileReader(base_file);
+		    
+		    BufferedReader br = new BufferedReader(fr); 
+		    String s = ""; 
+		    String s_;
+		    while((s_ = br.readLine()) != null) { 
+		       s += (s_ + System.getProperty("line.separator")) ; 
+		    }
+
+		    
+		    fw.write(s);
 		    
 		    for (Ligne l : lignes){
 
@@ -64,18 +78,13 @@ public class ExportSRT {
 			    	fin_minutes = "00";
 		    	}
 		    		
-		    	String temporalite = String.format("00:%s:%s,%03d --> 00:%s:%s,%03d", debut_minutes, debut_secondes, debut_centiemes, fin_minutes, fin_secondes, fin_centiemes);
+		    	String temporalite = String.format("0:%s:%s.%02d,0:%s:%s.%02d", debut_minutes, debut_secondes, debut_centiemes, fin_minutes, fin_secondes, fin_centiemes);
 
-	    		fw.write(compteur + "");
-	    		fw.write(System.getProperty("line.separator"));
+	    		fw.write("Dialogue: 0,");
 	    		fw.write(temporalite);
-	    		fw.write(System.getProperty("line.separator"));
+	    		fw.write(",Simple,,0,0,20,,");
 	    		fw.write(contenu);
 	    		fw.write(System.getProperty("line.separator"));
-	    		fw.write(System.getProperty("line.separator"));
-	    		
-	    		compteur ++;
-	    		
 	    	}
 		    
 		 	fw.flush();
@@ -92,3 +101,6 @@ public class ExportSRT {
 	}
 
 }
+
+
+//* ffmpeg -i '/mnt/nfs_public/pour David/TRANSCRIPTION/Main_18H39_vGood.mp4' -i '/mnt/nfs_public/pour David/TRANSCRIPTION/degrade.png' -filter_complex "[0:v][1:v] overlay=0:442:enable='between(t,0,60)'" -vcodec mpeg2video -q:v 0 -f mpeg2video - | ffmpeg -y -i -  -vf ass='/home/autor/Desktop/test_2.ass' -vcodec mpeg2video -q:v 0 '/mnt/nfs_public/pour David/TRANSCRIPTION/Main_18H39_vGood_overlay_ass.mpg
