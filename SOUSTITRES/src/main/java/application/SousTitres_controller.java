@@ -32,6 +32,10 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
+import javafx.scene.paint.StopBuilder;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -48,9 +52,8 @@ public class SousTitres_controller implements Initializable {
 	private FlowPane flowpane;
 	@FXML
 	private Pane pane;
-
-	@FXML
-	private Rectangle degrade;
+	
+	private Rectangle degrade_fx;
 	
 	@FXML
 	private Button export_button;
@@ -251,16 +254,34 @@ public class SousTitres_controller implements Initializable {
 		mediaControl = new MediaControl(mediaplayer, this);
 		
 		mediaControl.setOnMouseClicked(a -> playerStatus(a));
-		mediaControl.setPadding(new Insets(150, 20, 80, 20));
+		mediaControl.setPadding(new Insets(0, 20,0, 20));
 		
 		pane.getChildren().add(mediaControl);
-		degrade.toFront();
 		
+		degrade_fx = new Rectangle(20, 452, 960, 150);
+		LinearGradient lg = new LinearGradient(0.5,
+				                               0.0,
+				                               0.5,
+				                               1.0,
+				                               true, 
+				                               CycleMethod.NO_CYCLE,
+				                               new Stop[] { 
+				                                   new Stop(0.0, 
+				                            		        Color.web("#0d000000")),
+				                                   new Stop(1.0,
+				                            		        Color.web("#0d000088"))
+		                                       });
+		
+		degrade_fx.setFill(lg);
+		
+		
+		pane.getChildren().add(degrade_fx);	
+				
 		text_sous_titre = new Text("Sous titre ...");
 		text_sous_titre.setFont(Font.font("Lucida", 30.0));
 		text_sous_titre.setFill(Color.WHITE);
 		text_sous_titre.setLayoutX(100);
-		text_sous_titre.setLayoutY(630);
+		text_sous_titre.setLayoutY(530);
 		text_sous_titre.setVisible(true);
 		text_sous_titre.toFront();
 		text_sous_titre.textProperty().bind(phrase_affichee);

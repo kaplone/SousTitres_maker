@@ -40,6 +40,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -51,6 +52,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
 import javafx.scene.media.MediaView;
+import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
 public class MediaControl extends BorderPane {
@@ -208,6 +210,10 @@ public class MediaControl extends BorderPane {
         mediaBar.getChildren().add(volumeSlider);
 
         setBottom(mediaBar);
+        
+        VBox vbox = new VBox(100, new Rectangle(100, 62));
+        vbox.setVisible(false);
+        setTop(vbox);
     }
 
     protected void updateValues(SousTitres_controller st) {
