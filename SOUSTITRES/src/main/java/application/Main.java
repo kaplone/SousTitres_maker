@@ -15,7 +15,7 @@ public class Main extends Application {
 		SvgImageLoaderFactory.install();
 		
 		try {
-			Scene scene = new Scene((Parent) JfxUtils.loadFxml("SousTitres.fxml"), 1900, 800);
+			Scene scene = new Scene((Parent) JfxUtils.loadFxml("SousTitres.fxml"), 1910, 900);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
 			primaryStage.show();

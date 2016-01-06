@@ -20,14 +20,20 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
@@ -39,6 +45,7 @@ import javafx.scene.paint.StopBuilder;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import models.Allignement;
 import models.Espace;
 import models.Ligne;
 import models.Mot;
@@ -57,6 +64,13 @@ public class SousTitres_controller implements Initializable {
 	
 	@FXML
 	private Button export_button;
+	
+	@FXML
+	private VBox index_vbox;
+	
+	@FXML
+	private ChoiceBox<Allignement> allignement_choiceBox;
+	
 	
 	private Media media;
 	private MediaPlayer mediaplayer;
@@ -83,6 +97,14 @@ public class SousTitres_controller implements Initializable {
 	private ObjectProperty<String> phrase_affichee; 
 	
 	private boolean debut_texte = true;
+	
+	private static final String IM_FICHIER = "fichier_01.png";
+	private static final String IM_LIGNE = "retour_ligne_01.png";
+	
+	private static final Image IMG_FICHIER = new Image(IM_FICHIER);
+	private static final Image IMG_LIGNE =  new Image(IM_LIGNE);
+
+	private ImageView imv;
 	
 	public void onExport_button(){
 		
@@ -241,6 +263,39 @@ public class SousTitres_controller implements Initializable {
 		}	
 	}
 	
+	public void sautLigne(Event e){
+		
+		System.out.println(IMG_FICHIER);
+		System.out.println(IMG_LIGNE);
+		
+		System.out.println(((ImageView)((Button) e.getSource()).getGraphic()).getImage());
+		
+		if ( ((ImageView)((Button) e.getSource()).getGraphic()).getImage().equals(IMG_FICHIER)){
+			
+			ImageView im = new ImageView(IMG_LIGNE);
+			im.setPreserveRatio(true);
+			im.setFitHeight(16);
+			
+			((Button) e.getSource()).setGraphic(im);
+			
+			((HBox) ((Button) e.getSource()).getParent()).getChildren().get(1).setStyle("-fx-background-color: linear-gradient(#61a2b1, #2A5058);");
+		}
+		else {
+			
+			ImageView im = new ImageView(IMG_FICHIER);
+			im.setPreserveRatio(true);
+			im.setFitHeight(16);
+			
+			((Button) e.getSource()).setGraphic(im);
+			
+			((HBox) ((Button) e.getSource()).getParent()).getChildren().get(1).setStyle("-fx-background-color: linear-gradient(#999999, #bbbbbb);");
+			
+			System.out.println(((Button) ((HBox) ((Button) e.getSource()).getParent()).getChildren().get(1)).getText().split(" ")[0]);
+			
+		}
+		
+	}
+	
 	public void initialize(URL location, ResourceBundle resources) {
 		
 		lignes = new ArrayList<>();
@@ -335,6 +390,33 @@ public class SousTitres_controller implements Initializable {
 		mots_observables.addAll(mots);
 		
 		flowpane.getChildren().addAll(mots_observables);
+		
+		index_vbox.setSpacing(4);
+		index_vbox.setPadding(new Insets(0, 0, 0, 10));
+		
+		
+		for (int k=1; k < 40; k++){
+			
+			Button a = new Button();
+
+			imv = new ImageView(IMG_LIGNE);
+			
+			imv.setPreserveRatio(true);
+			imv.setFitHeight(16);
+			a.setGraphic(imv);
+			
+			a.setOnAction((e) -> sautLigne(e));
+			
+			Button b = new Button(String.format("%03d >", k));
+			
+			HBox hb = new HBox();
+			hb.getChildren().add(a);
+			hb.getChildren().add(b);
+			
+			index_vbox.getChildren().add(hb);
+		}
+		
+		allignement_choiceBox.setItems(FXCollections.observableArrayList(Allignement.values()));
 	}
 
 	public Map<String, Mot> getMap_des_mots() {

@@ -8,10 +8,13 @@ import javafx.scene.control.Label;
 public class Ligne {
 
 	private List<Mot> contenu;
+	
+	private Placement placement;
 
 	public Ligne(List<Mot> list) {
 		super();
 		this.contenu = list;
+		this.placement = new Placement();
 	}
 	
 	public List<Mot> getContenu() {
@@ -50,6 +53,14 @@ public class Ligne {
 
 	public Mot getDernier_mot() {
 		return contenu.get(contenu.size() -1);
+	}
+
+	public Placement getPlacement() {
+		return placement;
+	}
+
+	public void setPlacement(Placement placement) {
+		this.placement = placement;
 	}
 	
 	
