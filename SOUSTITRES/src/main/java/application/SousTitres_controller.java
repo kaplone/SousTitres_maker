@@ -18,6 +18,8 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
@@ -27,10 +29,12 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -46,6 +50,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import models.Allignement;
+import models.ButtonGrid;
 import models.Espace;
 import models.Ligne;
 import models.Mot;
@@ -70,6 +75,17 @@ public class SousTitres_controller implements Initializable {
 	
 	@FXML
 	private ChoiceBox<Allignement> allignement_choiceBox;
+	
+	@FXML
+	private GridPane lignes_grid;
+	
+	@FXML
+	private TextField textProperty_textField;
+	
+	private StringProperty observableString;
+	private StringProperty affichableString;
+	
+	private int derniere_ligne;
 	
 	
 	private Media media;
@@ -100,9 +116,11 @@ public class SousTitres_controller implements Initializable {
 	
 	private static final String IM_FICHIER = "fichier_01.png";
 	private static final String IM_LIGNE = "retour_ligne_01.png";
+	private static final String IM_DELETE = "delete_01.png";
 	
 	private static final Image IMG_FICHIER = new Image(IM_FICHIER);
 	private static final Image IMG_LIGNE =  new Image(IM_LIGNE);
+	private static final Image IMG_DELETE =  new Image(IM_DELETE);
 
 	private ImageView imv;
 	
@@ -141,7 +159,56 @@ public class SousTitres_controller implements Initializable {
     
     public void ligne_lecture(Ligne lu){
     	
-    	phrase_affichee.set(lu.toString());
+    	phrase_affichee.unbind();
+    	phrase_affichee.bind(lu.getContenu_edite());
+    }
+    
+    public void editer(Event e){
+
+    	((ButtonGrid) e.getSource()).getLigne().getContenu_edite().unbind();
+
+    	textProperty_textField.setText(((ButtonGrid) e.getSource()).getLigne().getContenu_edite().get());
+    	
+    	((ButtonGrid) e.getSource()).getLigne().getContenu_edite().bind(textProperty_textField.textProperty());
+    	
+    }
+    
+    public void ajout_ligne_dans_grille(Ligne ligne){
+    	
+    	Button a = new Button();
+
+		imv = new ImageView(IMG_LIGNE);
+		
+		imv.setPreserveRatio(true);
+		imv.setFitHeight(16);
+		a.setGraphic(imv);
+		a.setOnAction((e) -> sautLigne(e));
+		
+		Button b = new ButtonGrid(String.format("%03d >", ++derniere_ligne), ligne);
+		b.setOnAction((e) -> editer(e));
+		
+		TextField c = new TextField();
+		c.setText(ligne.toString());
+		
+		Button d = new ButtonGrid(derniere_ligne, a, b, c, lignes_grid, ligne);
+        imv = new ImageView(IMG_DELETE);
+		
+		imv.setPreserveRatio(true);
+		imv.setFitHeight(16);
+		d.setGraphic(imv);
+		d.setOnAction((e) -> ligneDelete( (ButtonGrid) e.getSource()));
+		
+		lignes_grid.add(a, 0, derniere_ligne);
+		lignes_grid.add(b, 1, derniere_ligne);
+		lignes_grid.add(c, 2, derniere_ligne);
+		lignes_grid.add(d, 3, derniere_ligne);
+
+    }
+    
+    public void ligneDelete(ButtonGrid bg){
+    	
+    	bg.removeLine();
+    	
     }
     
     public void defaire(){
@@ -219,6 +286,8 @@ public class SousTitres_controller implements Initializable {
 			
 			map_des_lignes.put(String.format("%.02f", ligne.getDebut() + i ).replace('.', ','), ligne);
 		}
+		
+		ajout_ligne_dans_grille(ligne);
     	
 
     }
@@ -299,6 +368,11 @@ public class SousTitres_controller implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 		
 		lignes = new ArrayList<>();
+		
+		derniere_ligne = 0;
+		
+		observableString = new SimpleStringProperty();
+		affichableString = new SimpleStringProperty();
 		
 		phrase_affichee = new SimpleObjectProperty<>();
 		
@@ -391,32 +465,34 @@ public class SousTitres_controller implements Initializable {
 		
 		flowpane.getChildren().addAll(mots_observables);
 		
-		index_vbox.setSpacing(4);
-		index_vbox.setPadding(new Insets(0, 0, 0, 10));
+		textProperty_textField.setEditable(true);
+		
+//		index_vbox.setSpacing(4);
+//		index_vbox.setPadding(new Insets(0, 0, 0, 10));
 		
 		
-		for (int k=1; k < 40; k++){
-			
-			Button a = new Button();
-
-			imv = new ImageView(IMG_LIGNE);
-			
-			imv.setPreserveRatio(true);
-			imv.setFitHeight(16);
-			a.setGraphic(imv);
-			
-			a.setOnAction((e) -> sautLigne(e));
-			
-			Button b = new Button(String.format("%03d >", k));
-			
-			HBox hb = new HBox();
-			hb.getChildren().add(a);
-			hb.getChildren().add(b);
-			
-			index_vbox.getChildren().add(hb);
-		}
+//		for (int k=1; k < 40; k++){
+//			
+//			Button a = new Button();
+//
+//			imv = new ImageView(IMG_LIGNE);
+//			
+//			imv.setPreserveRatio(true);
+//			imv.setFitHeight(16);
+//			a.setGraphic(imv);
+//			
+//			a.setOnAction((e) -> sautLigne(e));
+//			
+//			Button b = new Button(String.format("%03d >", k));
+//			
+//			HBox hb = new HBox();
+//			hb.getChildren().add(a);
+//			hb.getChildren().add(b);
+//			
+//			index_vbox.getChildren().add(hb);
+//		}
 		
-		allignement_choiceBox.setItems(FXCollections.observableArrayList(Allignement.values()));
+//		allignement_choiceBox.setItems(FXCollections.observableArrayList(Allignement.values()));
 	}
 
 	public Map<String, Mot> getMap_des_mots() {
