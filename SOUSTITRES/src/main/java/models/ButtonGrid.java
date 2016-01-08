@@ -54,6 +54,9 @@ public class ButtonGrid extends Button {
 	public void setLigne(Ligne ligne) {
 		this.ligne = ligne;
 	}
-
+    
+	public TextField getTextField(){
+		return (TextField) this.autresElements[2];
+	}
 
 }

@@ -78,12 +78,7 @@ public class SousTitres_controller implements Initializable {
 	
 	@FXML
 	private GridPane lignes_grid;
-	
-	@FXML
-	private TextField textProperty_textField;
-	
-	private StringProperty observableString;
-	private StringProperty affichableString;
+
 	
 	private int derniere_ligne;
 	
@@ -164,12 +159,18 @@ public class SousTitres_controller implements Initializable {
     }
     
     public void editer(Event e){
-
-    	((ButtonGrid) e.getSource()).getLigne().getContenu_edite().unbind();
-
-    	textProperty_textField.setText(((ButtonGrid) e.getSource()).getLigne().getContenu_edite().get());
     	
-    	((ButtonGrid) e.getSource()).getLigne().getContenu_edite().bind(textProperty_textField.textProperty());
+//    	TextField textField = ((ButtonGrid) e.getSource()).getTextField();
+//    	Ligne ligne = ((ButtonGrid) e.getSource()).getLigne();
+//    	
+//    	StringProperty textEditable = textField.textProperty();
+//    	StringProperty textEdite = ligne.getContenu_edite();
+//
+//    	textEdite.unbind();
+//
+//    	textField.setText(textEdite.get());
+//    	
+//    	textEdite.bind(textEditable);
     	
     }
     
@@ -188,8 +189,14 @@ public class SousTitres_controller implements Initializable {
 		b.setOnAction((e) -> editer(e));
 		
 		TextField c = new TextField();
-		c.setText(ligne.toString());
+		c.setText(ligne.getContenu_edite().get());
 		
+		StringProperty textEditable = c.textProperty();
+    	StringProperty textEdite = ligne.getContenu_edite();
+    	
+        c.setText(textEdite.get());
+    	textEdite.bind(textEditable);
+
 		Button d = new ButtonGrid(derniere_ligne, a, b, c, lignes_grid, ligne);
         imv = new ImageView(IMG_DELETE);
 		
@@ -371,9 +378,6 @@ public class SousTitres_controller implements Initializable {
 		
 		derniere_ligne = 0;
 		
-		observableString = new SimpleStringProperty();
-		affichableString = new SimpleStringProperty();
-		
 		phrase_affichee = new SimpleObjectProperty<>();
 		
 		point_d_entree = new SimpleDoubleProperty();
@@ -464,35 +468,7 @@ public class SousTitres_controller implements Initializable {
 		mots_observables.addAll(mots);
 		
 		flowpane.getChildren().addAll(mots_observables);
-		
-		textProperty_textField.setEditable(true);
-		
-//		index_vbox.setSpacing(4);
-//		index_vbox.setPadding(new Insets(0, 0, 0, 10));
-		
-		
-//		for (int k=1; k < 40; k++){
-//			
-//			Button a = new Button();
-//
-//			imv = new ImageView(IMG_LIGNE);
-//			
-//			imv.setPreserveRatio(true);
-//			imv.setFitHeight(16);
-//			a.setGraphic(imv);
-//			
-//			a.setOnAction((e) -> sautLigne(e));
-//			
-//			Button b = new Button(String.format("%03d >", k));
-//			
-//			HBox hb = new HBox();
-//			hb.getChildren().add(a);
-//			hb.getChildren().add(b);
-//			
-//			index_vbox.getChildren().add(hb);
-//		}
-		
-//		allignement_choiceBox.setItems(FXCollections.observableArrayList(Allignement.values()));
+
 	}
 
 	public Map<String, Mot> getMap_des_mots() {

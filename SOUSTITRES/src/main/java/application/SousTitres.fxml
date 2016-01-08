@@ -10,12 +10,7 @@
 </left>
 <bottom>
 <VBox>
-<children><HBox alignment="CENTER_LEFT" prefHeight="47.0" prefWidth="1910.0" spacing="100.0">
-<children><TextField fx:id="textProperty_textField" prefHeight="25.0" prefWidth="638.0">
-<HBox.margin>
-<Insets left="100.0" />
-</HBox.margin></TextField>
-</children></HBox><HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+<children><HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
 <children><VBox prefHeight="100.0" prefWidth="212.0">
 <children><Label alignment="CENTER" prefHeight="15.0" prefWidth="210.0" text="Presets">
 <VBox.margin>
