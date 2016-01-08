@@ -18,16 +18,11 @@ public class ButtonGrid extends Button {
 	
 	
 
-	public ButtonGrid(int rowInTheGrid, Button b1, Button b2, TextField tf, GridPane gp, Ligne l) {
-		super();
+	public ButtonGrid(int rowInTheGrid, String s, Button b1, Button b2, TextField tf, Button b3, GridPane gp, Ligne l) {
+		super(s);
 		this.rowInTheGrid = rowInTheGrid;
-		this.autresElements = new Node [] {b1, b2, tf, this};
+		this.autresElements = new Node [] {b1, b2, tf, b3};
 		this.grid = gp;
-		this.ligne = l;
-	}
-	
-	public ButtonGrid(String text, Ligne l){
-		super(text);
 		this.ligne = l;
 	}
 	
@@ -57,6 +52,10 @@ public class ButtonGrid extends Button {
     
 	public TextField getTextField(){
 		return (TextField) this.autresElements[2];
+	}
+	
+	public ButtonGrid getButton2(){
+		return (ButtonGrid) this.autresElements[1];
 	}
 
 }

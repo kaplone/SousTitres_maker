@@ -14,12 +14,15 @@ public class Ligne {
 	private StringProperty contenu_edite;
 	
 	private Placement placement;
+	
+	private boolean deuxiemeLigne;
 
 	public Ligne(List<Mot> list) {
 		super();
 		this.contenu = list;
 		this.placement = new Placement();
 		this.contenu_edite = new SimpleStringProperty(this.toString());
+		this.deuxiemeLigne = false;
 	}
 	
 	public List<Mot> getContenu() {
@@ -75,5 +78,14 @@ public class Ligne {
 	public void setContenu_edite(StringProperty contenu_edite) {
 		this.contenu_edite = contenu_edite;
 	}
+
+	public boolean isDeuxiemeLigne() {
+		return deuxiemeLigne;
+	}
+
+	public void setDeuxiemeLigne(boolean deuxiemeLigne) {
+		this.deuxiemeLigne = deuxiemeLigne;
+	}
+	
 
 }

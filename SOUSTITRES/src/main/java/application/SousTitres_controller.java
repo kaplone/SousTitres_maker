@@ -134,20 +134,20 @@ public class SousTitres_controller implements Initializable {
 	
     public void onMotEnter(MouseEvent me){
 		
-		((Label)me.getSource()).setStyle("-fx-font-size:25; -fx-background-color: #dddddd ;");
+		((Label)me.getSource()).setStyle("-fx-font-size:20; -fx-background-color: #dddddd ;");
 	}
     
     public void onMotExit(MouseEvent me){
 
-    	((Label)me.getSource()).setStyle("-fx-font-size:25; -fx-background-color: #eeeeee;");
+    	((Label)me.getSource()).setStyle("-fx-font-size:20; -fx-background-color: #eeeeee;");
 	}
     
     public void mot_lecture(Mot lu){
     	
-    	lu.setStyle("-fx-font-size:25; -fx-background-color: #aa88dd ;");
+    	lu.setStyle("-fx-font-size:20; -fx-background-color: #aa88dd ;");
     	
     	if (mot_lu != null) {
-    		mot_lu.setStyle("-fx-font-size:25; -fx-background-color: #eeeeee;");
+    		mot_lu.setStyle("-fx-font-size:20; -fx-background-color: #eeeeee;");
     	}
     	mot_lu = lu;
     }
@@ -176,7 +176,12 @@ public class SousTitres_controller implements Initializable {
     
     public void ajout_ligne_dans_grille(Ligne ligne){
     	
-    	Button a = new Button();
+    	Button a = null;
+    	Button b = null;
+    	Button d = null;
+    	TextField c = null;
+    	
+    	a = new ButtonGrid(derniere_ligne, "", a, b, c, d, lignes_grid, ligne);
 
 		imv = new ImageView(IMG_LIGNE);
 		
@@ -185,10 +190,10 @@ public class SousTitres_controller implements Initializable {
 		a.setGraphic(imv);
 		a.setOnAction((e) -> sautLigne(e));
 		
-		Button b = new ButtonGrid(String.format("%03d >", ++derniere_ligne), ligne);
+		b = new ButtonGrid(derniere_ligne, String.format("%03d >", ++derniere_ligne), a, b, c, d, lignes_grid, ligne);
 		b.setOnAction((e) -> editer(e));
 		
-		TextField c = new TextField();
+		c = new TextField();
 		c.setText(ligne.getContenu_edite().get());
 		
 		StringProperty textEditable = c.textProperty();
@@ -197,7 +202,7 @@ public class SousTitres_controller implements Initializable {
         c.setText(textEdite.get());
     	textEdite.bind(textEditable);
 
-		Button d = new ButtonGrid(derniere_ligne, a, b, c, lignes_grid, ligne);
+		d = new ButtonGrid(derniere_ligne, "", a, b, c, d, lignes_grid, ligne);
         imv = new ImageView(IMG_DELETE);
 		
 		imv.setPreserveRatio(true);
@@ -239,11 +244,11 @@ public class SousTitres_controller implements Initializable {
     	labelCourant.setPermanent(true);
     	labelCourant.setText("][");
     	labelCourant.setPadding(new Insets(0, 0, 0, 0));
-    	labelCourant.setStyle("-fx-font-size:25; -fx-text-fill: #aaaaee");
+    	labelCourant.setStyle("-fx-font-size:20; -fx-text-fill: #aaaaee");
     	
     	Mot padding = new Espace(this);
     	padding.setPadding(new Insets(0, bourage - 20, 0, 0));
-    	padding.setStyle("-fx-font-size:25; -fx-text-fill: #777777");
+    	padding.setStyle("-fx-font-size:20; -fx-text-fill: #777777");
     	padding.setVisible(true);
     	
     	index_label = mots.indexOf(labelCourant);
@@ -341,20 +346,26 @@ public class SousTitres_controller implements Initializable {
 	
 	public void sautLigne(Event e){
 		
-		System.out.println(IMG_FICHIER);
-		System.out.println(IMG_LIGNE);
+		ButtonGrid bg = (ButtonGrid) e.getSource();
+		GridPane gp = (GridPane) bg.getParent();
+		Ligne l = bg.getLigne();
 		
-		System.out.println(((ImageView)((Button) e.getSource()).getGraphic()).getImage());
+		int indice = gp.getChildren().indexOf(bg);
+		System.out.println(indice);
 		
-		if ( ((ImageView)((Button) e.getSource()).getGraphic()).getImage().equals(IMG_FICHIER)){
+		
+		if ( ((ImageView) bg.getGraphic()).getImage().equals(IMG_FICHIER)){
 			
 			ImageView im = new ImageView(IMG_LIGNE);
 			im.setPreserveRatio(true);
 			im.setFitHeight(16);
 			
-			((Button) e.getSource()).setGraphic(im);
+			bg.setGraphic(im);
 			
-			((HBox) ((Button) e.getSource()).getParent()).getChildren().get(1).setStyle("-fx-background-color: linear-gradient(#61a2b1, #2A5058);");
+			gp.getChildren().get(indice + 1).setStyle("-fx-background-color: linear-gradient(#61a2b1, #2A5058);");
+			
+			l.setDeuxiemeLigne(true);
+			
 		}
 		else {
 			
@@ -362,11 +373,11 @@ public class SousTitres_controller implements Initializable {
 			im.setPreserveRatio(true);
 			im.setFitHeight(16);
 			
-			((Button) e.getSource()).setGraphic(im);
+			bg.setGraphic(im);
+
+			gp.getChildren().get(indice + 1).setStyle("-fx-background-color: linear-gradient(#999999, #bbbbbb);");
 			
-			((HBox) ((Button) e.getSource()).getParent()).getChildren().get(1).setStyle("-fx-background-color: linear-gradient(#999999, #bbbbbb);");
-			
-			System.out.println(((Button) ((HBox) ((Button) e.getSource()).getParent()).getChildren().get(1)).getText().split(" ")[0]);
+			l.setDeuxiemeLigne(false);
 			
 		}
 		
@@ -411,7 +422,7 @@ public class SousTitres_controller implements Initializable {
 		pane.getChildren().add(degrade_fx);	
 				
 		text_sous_titre = new Text("Sous titre ...");
-		text_sous_titre.setFont(Font.font("Lucida", 30.0));
+		text_sous_titre.setFont(Font.font("Lucida", 25.0));
 		text_sous_titre.setFill(Color.WHITE);
 		text_sous_titre.setLayoutX(100);
 		text_sous_titre.setLayoutY(530);
@@ -444,7 +455,7 @@ public class SousTitres_controller implements Initializable {
 						        Double.parseDouble($(ctx).attr("dur")),
 						        $(ctx).text().startsWith(" ") ? true : false);
 				
-				m.setStyle("-fx-font-size:25;");
+				m.setStyle("-fx-font-size:20;");
 				
 				m.setOnMouseClicked(a -> onMotSelect(a));
 				m.setOnMouseEntered(a -> onMotEnter(a));
