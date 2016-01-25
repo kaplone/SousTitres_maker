@@ -15,7 +15,7 @@
 <children><Label alignment="CENTER" prefHeight="15.0" prefWidth="210.0" text="Presets">
 <VBox.margin>
 <Insets top="10.0" />
-</VBox.margin></Label><ChoiceBox prefHeight="25.0" prefWidth="208.0" />
+</VBox.margin></Label><ChoiceBox fx:id="preset_choiceBox" prefHeight="25.0" prefWidth="208.0" />
 </children>
 <HBox.margin>
 <Insets left="20.0" />

@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -22,7 +23,7 @@ public class ExportASS {
 	
 	
 	
-	public static void export_ass_file(ArrayList<Ligne> lignes){
+	public static void export_ass_file(LinkedList<Ligne> lignes){
 
 		try {
 		    fw = new FileWriter(ass_file);

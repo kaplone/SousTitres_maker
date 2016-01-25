@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -15,6 +16,7 @@ import org.xml.sax.SAXException;
 import static org.joox.JOOX.*;
 
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -54,6 +56,8 @@ import models.ButtonGrid;
 import models.Espace;
 import models.Ligne;
 import models.Mot;
+import models.Placement;
+import models.Preset;
 import utils.ExportASS;
 import utils.ExportSRT;
 import utils.MediaControl;
@@ -66,6 +70,7 @@ public class SousTitres_controller implements Initializable {
 	private Pane pane;
 	
 	private Rectangle degrade_fx;
+	private Rectangle bloc_fx;
 	
 	@FXML
 	private Button export_button;
@@ -75,6 +80,8 @@ public class SousTitres_controller implements Initializable {
 	
 	@FXML
 	private ChoiceBox<Allignement> allignement_choiceBox;
+	@FXML
+	private ChoiceBox<Preset> preset_choiceBox;
 	
 	@FXML
 	private GridPane lignes_grid;
@@ -94,7 +101,7 @@ public class SousTitres_controller implements Initializable {
 	
 	private ObservableList<Label> mots_observables ;
 	private ArrayList<Mot> mots ;
-	private ArrayList<Ligne> lignes ;
+	private LinkedList<Ligne> lignes ;
 	
 	private int index_label;
 	
@@ -119,6 +126,13 @@ public class SousTitres_controller implements Initializable {
 
 	private ImageView imv;
 	
+	private ObservableList<Allignement> observableAllignements;
+	private ObservableList<Preset> observablePresets;
+	
+	private Ligne ligne;
+	private Ligne lignePrecedente;
+	private Ligne ligneSuivante;
+	
 	public void onExport_button(){
 		
 		ExportSRT.export_srt_file(lignes);
@@ -126,21 +140,21 @@ public class SousTitres_controller implements Initializable {
 		
 	}
 	
-	public void onMotSelect(MouseEvent me){
-		
-		System.out.println(me.getSource());
-		System.out.println(((Mot)me.getSource()).getLayoutX());
-	}
+//	public void onMotSelect(MouseEvent me){
+//		
+//		System.out.println(me.getSource());
+//		System.out.println(((Mot)me.getSource()).getLayoutX());
+//	}
 	
-    public void onMotEnter(MouseEvent me){
-		
-		((Label)me.getSource()).setStyle("-fx-font-size:20; -fx-background-color: #dddddd ;");
-	}
-    
-    public void onMotExit(MouseEvent me){
-
-    	((Label)me.getSource()).setStyle("-fx-font-size:20; -fx-background-color: #eeeeee;");
-	}
+//    public void onMotEnter(MouseEvent me){
+//		
+//		((Label)me.getSource()).setStyle("-fx-font-size:20; -fx-background-color: #dddddd ;");
+//	}
+//    
+//    public void onMotExit(MouseEvent me){
+//
+//    	((Label)me.getSource()).setStyle("-fx-font-size:20; -fx-background-color: #eeeeee;");
+//	}
     
     public void mot_lecture(Mot lu){
     	
@@ -156,6 +170,9 @@ public class SousTitres_controller implements Initializable {
     	
     	phrase_affichee.unbind();
     	phrase_affichee.bind(lu.getContenu_edite());
+    	
+    	text_sous_titre.setLayoutX((940 - text_sous_titre.getLayoutBounds().getWidth())/2);
+    	text_sous_titre.layoutYProperty().bind(lu.getLayoutY());
     }
     
     public void editer(Event e){
@@ -214,6 +231,8 @@ public class SousTitres_controller implements Initializable {
 		lignes_grid.add(b, 1, derniere_ligne);
 		lignes_grid.add(c, 2, derniere_ligne);
 		lignes_grid.add(d, 3, derniere_ligne);
+		
+		ligne.setTf(c);
 
     }
     
@@ -223,7 +242,10 @@ public class SousTitres_controller implements Initializable {
     	
     }
     
-    public void defaire(){
+    public void defaire(MouseEvent me){
+    	
+    	labelCourant = ((Espace)me.getSource());
+    	
     	labelCourant.setPermanent(false);
     	labelCourant.setText(" ");
     	labelCourant.setPadding(new Insets(0, 0, 0, 0));
@@ -248,8 +270,10 @@ public class SousTitres_controller implements Initializable {
     	
     	Mot padding = new Espace(this);
     	padding.setPadding(new Insets(0, bourage - 20, 0, 0));
-    	padding.setStyle("-fx-font-size:20; -fx-text-fill: #777777");
+    	padding.setStyle("-fx-font-size:20; -fx-text-fill: #000077");
     	padding.setVisible(true);
+    	padding.setOnMouseEntered(null);
+    	padding.setOnMouseExited(null);
     	
     	index_label = mots.indexOf(labelCourant);
     	
@@ -263,7 +287,9 @@ public class SousTitres_controller implements Initializable {
     	
     	labelCourant = (Espace) mots.get(index_label);
     	
-    	labelCourant.setOnMouseClicked(a -> defaire());
+    	labelCourant.setOnMouseClicked(a -> defaire(me));
+    	labelCourant.setOnMouseEntered(null);
+    	labelCourant.setOnMouseExited(null);
     	
     	Label l = labelCourant;
     	int index_l = mots.indexOf(l);
@@ -282,15 +308,20 @@ public class SousTitres_controller implements Initializable {
     	for (int i = index_l; i < index_label; i++){
     		mots_ligne.add(mots.get(i));
     	}
-    	
-    	
-    	Ligne ligne = new Ligne(mots_ligne);
+    	lignePrecedente = ligne;
+    	ligne = new Ligne(mots_ligne);
 	
-    	System.out.println(ligne.toString());
-    	System.out.println(ligne.getPremier_mot().getText() + " --> " + ligne.getDernier_mot().getText());
-    	System.out.println("début : " + ligne.getDebut());
-    	System.out.println(String.format("durée : %.02f", ligne.getDuree()));
+//    	System.out.println(ligne.toString());
+//    	System.out.println(ligne.getPremier_mot().getText() + " --> " + ligne.getDernier_mot().getText());
+//    	System.out.println("début : " + ligne.getDebut());
+//    	System.out.println(String.format("durée : %.02f", ligne.getDuree()));
     	
+    	ligne.setLigneprecedente(lignePrecedente);
+    	
+    	if(lignePrecedente != null){
+    		lignePrecedente.setLigneSuivante(ligne);
+    	}
+
     	map_des_lignes.put(String.format("%.02f", ligne.getDebut()), ligne);
     	lignes.add(ligne);
 		
@@ -353,39 +384,113 @@ public class SousTitres_controller implements Initializable {
 		int indice = gp.getChildren().indexOf(bg);
 		System.out.println(indice);
 		
+		lignePrecedente = l.getLigneprecedente();
 		
-		if ( ((ImageView) bg.getGraphic()).getImage().equals(IMG_FICHIER)){
+//		Ligne lignePrecedente = lignes.get(lignes.indexOf(l) -1);
+		
+//		if(! l.equals(lignes.getLast())){
+//			Ligne ligneSuivante = lignes.get(lignes.indexOf(l) +1);
+//		}
+			
+		if ( ((ImageView) bg.getGraphic()).getImage().equals(IMG_LIGNE)){
+				
+			if (! lignePrecedente.isDeuxiemeLigne() && ! l.isPremiereLigne()){
+				ImageView im = new ImageView(IMG_FICHIER);
+				im.setPreserveRatio(true);
+				im.setFitHeight(16);
+				
+				bg.setGraphic(im);
+				
+				gp.getChildren().get(indice + 1).setStyle("-fx-background-color: linear-gradient(#999999, #bbbbbb);");
+				
+				// changement des drapeaux
+				l.setDeuxiemeLigne(true);
+				lignePrecedente.setPremiereLigne(true);	
+				
+				// copie en backup des contenus étités
+				l.getContenu_edite_backup().set(l.getContenu_edite().get());
+				lignePrecedente.getContenu_edite_backup().set(lignePrecedente.getContenu_edite().get());
+				
+				// unbind pour pouvoir setter
+				l.getContenu_edite().unbind();
+				lignePrecedente.getContenu_edite().unbind();
+				
+                // set des contenus édités avec les nouvelles valeurs
+				l.getContenu_edite().set("");
+				lignePrecedente.getContenu_edite().set(lignePrecedente.getContenu_edite_backup().get() + "\n" + l.getContenu_edite_backup().get());
+
+				System.out.println(lignePrecedente.getContenu_edite().get());
+				
+				// 
+				StringProperty textEditable = l.getTf().textProperty();
+		    	StringProperty textEdite = l.getContenu_edite();
+		    	
+		        l.getTf().setText(textEdite.get());
+		    	textEdite.bind(textEditable);
+		    	
+		    	StringProperty textEditable_p = lignePrecedente.getTf().textProperty();
+		    	StringProperty textEdite_p = lignePrecedente.getContenu_edite();
+		    	
+		    	lignePrecedente.getTf().setText(textEdite_p.get());
+		    	textEdite.bind(textEditable_p);
+				
+				for (double i = 0.01d; i < lignePrecedente.getDuree(); i+=0.01){
+					
+					map_des_lignes.replace(String.format("%.02f", lignePrecedente.getDebut() + i ).replace('.', ','), lignePrecedente);
+				}
+				
+				System.out.println(map_des_lignes);
+				
+			}		
+		}
+		else {
 			
 			ImageView im = new ImageView(IMG_LIGNE);
 			im.setPreserveRatio(true);
 			im.setFitHeight(16);
 			
 			bg.setGraphic(im);
-			
+
 			gp.getChildren().get(indice + 1).setStyle("-fx-background-color: linear-gradient(#61a2b1, #2A5058);");
 			
-			l.setDeuxiemeLigne(true);
-			
-		}
-		else {
-			
-			ImageView im = new ImageView(IMG_FICHIER);
-			im.setPreserveRatio(true);
-			im.setFitHeight(16);
-			
-			bg.setGraphic(im);
-
-			gp.getChildren().get(indice + 1).setStyle("-fx-background-color: linear-gradient(#999999, #bbbbbb);");
-			
+			// changement des drapeaux
 			l.setDeuxiemeLigne(false);
+			lignePrecedente.setPremiereLigne(false);			
 			
+			// unbind pour pouvoir setter
+			l.getContenu_edite().unbind();
+			lignePrecedente.getContenu_edite().unbind();
+			
+			// set des contenus édités avec les nouvelles valeurs
+			l.getContenu_edite().set(l.getContenu_edite_backup().get());
+			lignePrecedente.getContenu_edite().set(lignePrecedente.getContenu_edite_backup().get());
+			
+			// 
+			StringProperty textEditable = l.getTf().textProperty();
+	    	StringProperty textEdite = l.getContenu_edite();
+	    	
+	        l.getTf().setText(textEdite.get());
+	    	textEdite.bind(textEditable);
+	    	
+	    	StringProperty textEditable_p = lignePrecedente.getTf().textProperty();
+	    	StringProperty textEdite_p = lignePrecedente.getContenu_edite();
+	    	
+	    	lignePrecedente.getTf().setText(textEdite_p.get());
+	    	textEdite.bind(textEditable_p);
+
+			for (double i = 0.01d; i < l.getDuree(); i+=0.01){
+				
+				map_des_lignes.replace(String.format("%.02f", l.getDebut() + i ).replace('.', ','), l);
+			}
+			
+			// il peut rester les timecodes de LignePrecedente ...
 		}
 		
 	}
 	
 	public void initialize(URL location, ResourceBundle resources) {
 		
-		lignes = new ArrayList<>();
+		lignes = new LinkedList<Ligne>();
 		
 		derniere_ligne = 0;
 		
@@ -393,7 +498,8 @@ public class SousTitres_controller implements Initializable {
 		
 		point_d_entree = new SimpleDoubleProperty();
 		
-		media = new Media("file:///home/autor/Main_18H39_vGood.mp4");
+		//media = new Media("file:///home/autor/Main_18H39_vGood.mp4");
+		media = new Media("file:///home/autor/Desktop/CASTOARCHI_VCASTO_MASTER.mp4");
 		mediaplayer = new MediaPlayer(media);
 		mediaControl = new MediaControl(mediaplayer, this);
 		
@@ -402,32 +508,38 @@ public class SousTitres_controller implements Initializable {
 		
 		pane.getChildren().add(mediaControl);
 		
-		degrade_fx = new Rectangle(20, 452, 960, 150);
-		LinearGradient lg = new LinearGradient(0.5,
-				                               0.0,
-				                               0.5,
-				                               1.0,
-				                               true, 
-				                               CycleMethod.NO_CYCLE,
-				                               new Stop[] { 
-				                                   new Stop(0.0, 
-				                            		        Color.web("#0d000000")),
-				                                   new Stop(1.0,
-				                            		        Color.web("#0d000088"))
-		                                       });
+//		degrade_fx = new Rectangle(20, 452, 960, 150);
+//		LinearGradient lg = new LinearGradient(0.5,
+//				                               0.0,
+//				                               0.5,
+//				                               1.0,
+//				                               true, 
+//				                               CycleMethod.NO_CYCLE,
+//				                               new Stop[] { 
+//				                                   new Stop(0.0, 
+//				                            		        Color.web("#0d000000")),
+//				                                   new Stop(1.0,
+//				                            		        Color.web("#0d000088"))
+//		                                       });
+//		
+//		degrade_fx.setFill(lg);
+//		
+//		
+//		pane.getChildren().add(degrade_fx);	
 		
-		degrade_fx.setFill(lg);
-		
-		
-		pane.getChildren().add(degrade_fx);	
+		bloc_fx = new Rectangle(20, 450, 960, 79);
+		bloc_fx.setFill(Color.color(1.0d, 1.0d, 1.0d, 0.7d));
+		pane.getChildren().add(bloc_fx);
 				
 		text_sous_titre = new Text("Sous titre ...");
 		text_sous_titre.setFont(Font.font("Lucida", 25.0));
-		text_sous_titre.setFill(Color.WHITE);
+		//text_sous_titre.setFill(Color.WHITE);
+		text_sous_titre.setFill(Color.BLACK);
 		text_sous_titre.setLayoutX(100);
-		text_sous_titre.setLayoutY(530);
+		text_sous_titre.setLayoutY(515);
 		text_sous_titre.setVisible(true);
 		text_sous_titre.toFront();
+		
 		text_sous_titre.textProperty().bind(phrase_affichee);
 			
 		pane.getChildren().add(text_sous_titre);
@@ -439,7 +551,7 @@ public class SousTitres_controller implements Initializable {
 		mots = new ArrayList<>();
 		
 		try {
-			$(new File("/mnt/nfs_public/pour David/TRANSCRIPTION/vocapia/18h39_sous_titres.xml")).find("Word")
+			$(new File("/mnt/nfs_public/pour David/TRANSCRIPTION/vocapia/CASTOARCHI_VCASTO_MASTER_sous_titres_v2.xml")).find("Word")
 			.each(ctx -> {
 				
 				if (debut_texte){
@@ -447,6 +559,11 @@ public class SousTitres_controller implements Initializable {
 				}				
 				else if ($(ctx).text().startsWith(" ")){
 					Espace espace = new Espace(this);
+					
+					espace.setOnMouseClicked(a -> onEspaceSelect(a));
+					espace.setOnMouseEntered(a -> onEspaceEnter(a));
+					espace.setOnMouseExited(a -> onEspaceExit(a));
+			    	
 					mots.add(espace);
 				}
 				
@@ -457,9 +574,9 @@ public class SousTitres_controller implements Initializable {
 				
 				m.setStyle("-fx-font-size:20;");
 				
-				m.setOnMouseClicked(a -> onMotSelect(a));
-				m.setOnMouseEntered(a -> onMotEnter(a));
-				m.setOnMouseExited(a -> onMotExit(a));
+//				m.setOnMouseClicked(a -> onMotSelect(a));
+//				m.setOnMouseEntered(a -> onMotEnter(a));
+//				m.setOnMouseExited(a -> onMotExit(a));
 				
 				mots.add(m);
 				map_des_mots.put($(ctx).attr("stime").replace('.', ','), m);
@@ -479,6 +596,22 @@ public class SousTitres_controller implements Initializable {
 		mots_observables.addAll(mots);
 		
 		flowpane.getChildren().addAll(mots_observables);
+		
+		
+		observableAllignements = FXCollections.observableArrayList(Allignement.values());
+		allignement_choiceBox.setItems(observableAllignements);
+		
+		observablePresets = FXCollections.observableArrayList();
+		preset_choiceBox.setItems(observablePresets);
+		
+		Placement p = new Placement();
+		p.setAllignement(Allignement.CENTRE);
+		p.setHaut(400);
+		p.setLateral(50);
+		observablePresets.add(new Preset(p, "Centre 1"));
+		
+		
+		
 
 	}
 

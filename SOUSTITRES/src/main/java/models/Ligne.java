@@ -2,27 +2,44 @@ package models;
 
 import java.util.List;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 
 public class Ligne {
 
 	private List<Mot> contenu;
 	
 	private StringProperty contenu_edite;
+	private StringProperty contenu_edite_backup;
 	
 	private Placement placement;
 	
+	private boolean premiereLigne;
 	private boolean deuxiemeLigne;
+	
+	private Mot premierMot;
+	private Mot dernierMot;
+	
+	private Ligne ligneSuivante = null;
+	private Ligne ligneprecedente = null;
+	
+	private TextField tf;
 
 	public Ligne(List<Mot> list) {
 		super();
 		this.contenu = list;
 		this.placement = new Placement();
-		this.contenu_edite = new SimpleStringProperty(this.toString());
+		this.contenu_edite = new SimpleStringProperty(this.stringify());
+		this.premiereLigne = false;
 		this.deuxiemeLigne = false;
+		this.premierMot = list.get(0);
+		this.dernierMot = list.get(contenu.size() -1);
+		this.contenu_edite_backup = new SimpleStringProperty();
 	}
 	
 	public List<Mot> getContenu() {
@@ -30,8 +47,9 @@ public class Ligne {
 	}
 	
 	public double getDebut() {
-		
-		return getPremier_mot().getDebut();
+
+		return premierMot.getDebut();
+
 	}
 	
 	public void setContenu(List<Mot> contenu) {
@@ -41,17 +59,36 @@ public class Ligne {
 	@Override
 	public String toString() {
 		
+		return this.contenu_edite.get();
+		
+//		String ligne = "";
+//		
+//		for (Mot m : contenu){
+//			ligne += m.getText();
+//		}
+//		return ligne;
+	}	
+	
+	public String stringify() {
+
+		
 		String ligne = "";
 		
 		for (Mot m : contenu){
 			ligne += m.getText();
 		}
 		return ligne;
-	}	
+	}
 	
 	public double getDuree() {
- 
-		return getDernier_mot().getDebut()+ getDernier_mot().getDuree() - this.getDebut();
+		
+		if (this.isPremiereLigne()){
+			return ligneSuivante.getDernier_mot().getDebut() + ligneSuivante.getDernier_mot().getDuree() - premierMot.getDebut();
+		}
+		else {
+			return dernierMot.getDebut()+ dernierMot.getDuree() - premierMot.getDebut();
+		}
+
 		
 	}
 
@@ -60,7 +97,7 @@ public class Ligne {
 	}
 
 	public Mot getDernier_mot() {
-		return contenu.get(contenu.size() -1);
+		return dernierMot;
 	}
 
 	public Placement getPlacement() {
@@ -79,6 +116,30 @@ public class Ligne {
 		this.contenu_edite = contenu_edite;
 	}
 
+	public Ligne getLigneSuivante() {
+		return ligneSuivante;
+	}
+
+	public void setLigneSuivante(Ligne ligneSuivante) {
+		this.ligneSuivante = ligneSuivante;
+	}
+
+	public Ligne getLigneprecedente() {
+		return ligneprecedente;
+	}
+
+	public void setLigneprecedente(Ligne ligneprecedente) {
+		this.ligneprecedente = ligneprecedente;
+	}
+
+	public boolean isPremiereLigne() {
+		return premiereLigne;
+	}
+
+	public void setPremiereLigne(boolean premiereLigne) {
+		this.premiereLigne = premiereLigne;
+	}
+
 	public boolean isDeuxiemeLigne() {
 		return deuxiemeLigne;
 	}
@@ -86,6 +147,31 @@ public class Ligne {
 	public void setDeuxiemeLigne(boolean deuxiemeLigne) {
 		this.deuxiemeLigne = deuxiemeLigne;
 	}
+
+	public StringProperty getContenu_edite_backup() {
+		return contenu_edite_backup;
+	}
+
+	public void setContenu_edite_backup(StringProperty contenu_edite_backup) {
+		this.contenu_edite_backup = contenu_edite_backup;
+	}
+
+	public TextField getTf() {
+		return tf;
+	}
+
+	public void setTf(TextField tf) {
+		this.tf = tf;
+	}
 	
+	public IntegerProperty getLayoutY(){
+		
+		if (this.premiereLigne){
+			return new SimpleIntegerProperty(485);
+		}
+		else {
+			return new SimpleIntegerProperty(498);
+		}
+	}
 
 }

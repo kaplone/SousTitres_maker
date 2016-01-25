@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -17,7 +18,7 @@ public class ExportSRT {
 	
 	
 	
-	public static void export_srt_file(ArrayList<Ligne> lignes){
+	public static void export_srt_file(LinkedList<Ligne> lignes){
 		
 		int compteur = 1;
 		
