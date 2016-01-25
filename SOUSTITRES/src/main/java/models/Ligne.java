@@ -8,7 +8,10 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 public class Ligne {
 
@@ -28,18 +31,18 @@ public class Ligne {
 	private Ligne ligneSuivante = null;
 	private Ligne ligneprecedente = null;
 	
-	private TextField tf;
+	private TextArea tf;
 
 	public Ligne(List<Mot> list) {
 		super();
 		this.contenu = list;
 		this.placement = new Placement();
 		this.contenu_edite = new SimpleStringProperty(this.stringify());
+		this.contenu_edite_backup = new SimpleStringProperty(this.stringify());
 		this.premiereLigne = false;
 		this.deuxiemeLigne = false;
 		this.premierMot = list.get(0);
 		this.dernierMot = list.get(contenu.size() -1);
-		this.contenu_edite_backup = new SimpleStringProperty();
 	}
 	
 	public List<Mot> getContenu() {
@@ -156,11 +159,11 @@ public class Ligne {
 		this.contenu_edite_backup = contenu_edite_backup;
 	}
 
-	public TextField getTf() {
+	public TextArea getTf() {
 		return tf;
 	}
 
-	public void setTf(TextField tf) {
+	public void setTf(TextArea tf) {
 		this.tf = tf;
 	}
 	
@@ -172,6 +175,16 @@ public class Ligne {
 		else {
 			return new SimpleIntegerProperty(498);
 		}
+	}
+	
+	public int getSize(){
+
+		Text text = new Text(contenu_edite_backup.get());
+		text.setFont(Font.font("Lucida", 25.0));
+
+		return (int) Math.round(text.getLayoutBounds().getWidth());
+		
+		
 	}
 
 }

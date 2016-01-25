@@ -2,6 +2,7 @@ package models;
 
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
@@ -18,7 +19,7 @@ public class ButtonGrid extends Button {
 	
 	
 
-	public ButtonGrid(int rowInTheGrid, String s, Button b1, Button b2, TextField tf, Button b3, GridPane gp, Ligne l) {
+	public ButtonGrid(int rowInTheGrid, String s, Button b1, Button b2, TextArea tf, Button b3, GridPane gp, Ligne l) {
 		super(s);
 		this.rowInTheGrid = rowInTheGrid;
 		this.autresElements = new Node [] {b1, b2, tf, b3};

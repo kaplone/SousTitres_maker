@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.TreeMap;
+import java.util.ResourceBundle.Control;
 import java.util.stream.Collectors;
 
 import org.xml.sax.SAXException;
@@ -31,6 +32,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -39,6 +41,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -196,7 +199,7 @@ public class SousTitres_controller implements Initializable {
     	Button a = null;
     	Button b = null;
     	Button d = null;
-    	TextField c = null;
+    	TextArea c = null;
     	
     	a = new ButtonGrid(derniere_ligne, "", a, b, c, d, lignes_grid, ligne);
 
@@ -210,7 +213,7 @@ public class SousTitres_controller implements Initializable {
 		b = new ButtonGrid(derniere_ligne, String.format("%03d >", ++derniere_ligne), a, b, c, d, lignes_grid, ligne);
 		b.setOnAction((e) -> editer(e));
 		
-		c = new TextField();
+		c = new TextArea();
 		c.setText(ligne.getContenu_edite().get());
 		
 		StringProperty textEditable = c.textProperty();
@@ -227,6 +230,13 @@ public class SousTitres_controller implements Initializable {
 		d.setGraphic(imv);
 		d.setOnAction((e) -> ligneDelete( (ButtonGrid) e.getSource()));
 		
+		RowConstraints row = new RowConstraints(30);
+		//row.setPrefHeight(20);
+		row.setMaxHeight(javafx.scene.control.Control.USE_PREF_SIZE);
+		row.setMinHeight(javafx.scene.control.Control.USE_PREF_SIZE);
+		
+		lignes_grid.getRowConstraints().add(row);
+
 		lignes_grid.add(a, 0, derniere_ligne);
 		lignes_grid.add(b, 1, derniere_ligne);
 		lignes_grid.add(c, 2, derniere_ligne);
@@ -341,7 +351,8 @@ public class SousTitres_controller implements Initializable {
     	if (! labelCourant.isPermanent()){
     	
 	    	point_d_entree.set(me.getSceneX());
-	    	bourage = 896 - (me.getSceneX() - 1000) - 20;	    	
+	    	//bourage = 896 - (me.getSceneX() - 1000) - 20;	 
+	    	bourage = 896 - (me.getSceneX() - 1000) - 18;
 	    	labelCourant.setPadding(new Insets(0, bourage, 0, 0));
     	}
     }
@@ -411,36 +422,56 @@ public class SousTitres_controller implements Initializable {
 				l.getContenu_edite_backup().set(l.getContenu_edite().get());
 				lignePrecedente.getContenu_edite_backup().set(lignePrecedente.getContenu_edite().get());
 				
+				// calcul des tailles des textes
+				int taille_l1 = lignePrecedente.getSize();
+				int taille_l2  =l.getSize();
+				
 				// unbind pour pouvoir setter
 				l.getContenu_edite().unbind();
 				lignePrecedente.getContenu_edite().unbind();
 				
                 // set des contenus édités avec les nouvelles valeurs
 				l.getContenu_edite().set("");
-				lignePrecedente.getContenu_edite().set(lignePrecedente.getContenu_edite_backup().get() + "\n" + l.getContenu_edite_backup().get());
-
-				System.out.println(lignePrecedente.getContenu_edite().get());
+				
+				if ( taille_l1 >=  taille_l2){
+					
+					int nb = (taille_l1 - taille_l2) / 15;
+					
+					String decallage = "";
+					for (int i = 0; i < nb; i++){
+						decallage += " ";
+					}
+					
+					lignePrecedente.getContenu_edite().set(lignePrecedente.getContenu_edite_backup().get() + "\n" + decallage + l.getContenu_edite_backup().get());
+				}
+				else {
+					
+					int nb = (taille_l2 - taille_l1) / 15;
+					String decallage = "";
+					for (int i = 0; i < nb; i++){
+						decallage += " ";
+					}
+					
+					lignePrecedente.getContenu_edite().set(decallage + lignePrecedente.getContenu_edite_backup().get() + "\n" + l.getContenu_edite_backup().get());
+				}
 				
 				// 
-				StringProperty textEditable = l.getTf().textProperty();
+				//StringProperty textEditable = l.getTf().textProperty();
 		    	StringProperty textEdite = l.getContenu_edite();
 		    	
 		        l.getTf().setText(textEdite.get());
-		    	textEdite.bind(textEditable);
+		    	//textEdite.bind(textEditable);
 		    	
 		    	StringProperty textEditable_p = lignePrecedente.getTf().textProperty();
 		    	StringProperty textEdite_p = lignePrecedente.getContenu_edite();
 		    	
 		    	lignePrecedente.getTf().setText(textEdite_p.get());
-		    	textEdite.bind(textEditable_p);
+		    	textEdite_p.bind(textEditable_p);
 				
 				for (double i = 0.01d; i < lignePrecedente.getDuree(); i+=0.01){
 					
 					map_des_lignes.replace(String.format("%.02f", lignePrecedente.getDebut() + i ).replace('.', ','), lignePrecedente);
-				}
-				
-				System.out.println(map_des_lignes);
-				
+				}				
 			}		
 		}
 		else {
@@ -476,7 +507,7 @@ public class SousTitres_controller implements Initializable {
 	    	StringProperty textEdite_p = lignePrecedente.getContenu_edite();
 	    	
 	    	lignePrecedente.getTf().setText(textEdite_p.get());
-	    	textEdite.bind(textEditable_p);
+	    	textEdite_p.bind(textEditable_p);
 
 			for (double i = 0.01d; i < l.getDuree(); i+=0.01){
 				
@@ -493,7 +524,8 @@ public class SousTitres_controller implements Initializable {
 		lignes = new LinkedList<Ligne>();
 		
 		derniere_ligne = 0;
-		
+		lignes_grid.setVgap(5);
+	
 		phrase_affichee = new SimpleObjectProperty<>();
 		
 		point_d_entree = new SimpleDoubleProperty();
@@ -609,8 +641,7 @@ public class SousTitres_controller implements Initializable {
 		p.setHaut(400);
 		p.setLateral(50);
 		observablePresets.add(new Preset(p, "Centre 1"));
-		
-		
+
 		
 
 	}
