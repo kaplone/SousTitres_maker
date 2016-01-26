@@ -19,28 +19,24 @@
 </children>
 <HBox.margin>
 <Insets left="20.0" />
-</HBox.margin></VBox><VBox prefHeight="140.0" prefWidth="218.0">
+</HBox.margin></VBox><VBox prefHeight="100.0" prefWidth="584.0">
 <children><Label alignment="CENTER" prefHeight="15.0" prefWidth="245.0" text="Marge haut">
 <VBox.margin>
 <Insets top="10.0" />
 </VBox.margin></Label>
 <HBox alignment="CENTER" prefHeight="25.0" prefWidth="244.0">
-<children><Button fx:id="margeHauteMoins_button" mnemonicParsing="false" prefHeight="25.0" prefWidth="40.0" text="-" /><TextField fx:id="margeHaute_textField" prefHeight="25.0" prefWidth="36.0" /><Button fx:id="margeHautePlus_button" mnemonicParsing="false" prefHeight="25.0" prefWidth="41.0" text="+" />
+<children><Button fx:id="margeHauteMoins_button" mnemonicParsing="false" prefHeight="25.0" prefWidth="40.0" text="-" /><TextField fx:id="margeHaute_textField" prefHeight="25.0" prefWidth="64.0" /><Button fx:id="margeHautePlus_button" mnemonicParsing="false" prefHeight="25.0" prefWidth="41.0" text="+" />
 </children>
 </HBox>
-</children></VBox>
 <VBox prefHeight="42.0" prefWidth="242.0">
-<children><Label alignment="CENTER" prefHeight="15.0" prefWidth="239.0" text="Alignement">
-<VBox.margin>
-<Insets top="10.0" />
-</VBox.margin></Label><ChoiceBox fx:id="allignement_choiceBox" prefHeight="25.0" prefWidth="245.0" />
+<children>
 <Label fx:id="margeDroite_label" alignment="CENTER" prefHeight="15.0" prefWidth="244.0" text="Marge droite">
 <VBox.margin>
 <Insets top="10.0" />
 </VBox.margin></Label><HBox alignment="CENTER" prefHeight="25.0" prefWidth="244.0">
 <children>
 <Button fx:id="margeDroiteMoins_button" mnemonicParsing="false" prefHeight="25.0" prefWidth="40.0" text="&lt;-" />
-<TextField fx:id="margeDroite_textField" prefHeight="25.0" prefWidth="36.0" />
+<TextField fx:id="margeDroite_textField" prefHeight="25.0" prefWidth="64.0" />
 <Button fx:id="margeDroitePlus_button" mnemonicParsing="false" prefHeight="25.0" prefWidth="41.0" text="-&gt;" />
 </children>
 </HBox>
@@ -48,7 +44,11 @@
 <HBox.margin>
 <Insets right="700.0" />
 </HBox.margin>
-</VBox><Button mnemonicParsing="false" prefHeight="25.0" prefWidth="189.0" text="exporter le .MP4">
+</VBox>
+</children>
+<padding>
+<Insets right="400.0" />
+</padding></VBox><Button mnemonicParsing="false" prefHeight="25.0" prefWidth="189.0" text="exporter le .MP4">
 <HBox.margin>
 <Insets right="20.0" />
 </HBox.margin></Button><Button mnemonicParsing="false" prefHeight="25.0" prefWidth="186.0" text="exporter le .ASS">

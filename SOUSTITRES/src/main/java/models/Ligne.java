@@ -6,10 +6,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.collections.ObservableList;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
@@ -167,14 +164,21 @@ public class Ligne {
 		this.tf = tf;
 	}
 	
-	public IntegerProperty getLayoutY(){
+	public IntegerProperty getLayoutY(boolean synthe){
 		
-		if (this.premiereLigne){
-			return new SimpleIntegerProperty(485);
+		if (synthe){
+			return new SimpleIntegerProperty(482);
 		}
 		else {
-			return new SimpleIntegerProperty(498);
+			if (this.premiereLigne){
+				return new SimpleIntegerProperty(485);
+			}
+			else {
+				return new SimpleIntegerProperty(498);
+			}
 		}
+		
+		
 	}
 	
 	public int getSize(){

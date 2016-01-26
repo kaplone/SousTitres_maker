@@ -9,20 +9,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.TreeMap;
-import java.util.ResourceBundle.Control;
-import java.util.stream.Collectors;
 
 import org.xml.sax.SAXException;
 
 import static org.joox.JOOX.*;
 
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
@@ -33,13 +31,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
@@ -47,10 +43,6 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.CycleMethod;
-import javafx.scene.paint.LinearGradient;
-import javafx.scene.paint.Stop;
-import javafx.scene.paint.StopBuilder;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -82,8 +74,6 @@ public class SousTitres_controller implements Initializable {
 	private VBox index_vbox;
 	
 	@FXML
-	private ChoiceBox<Allignement> allignement_choiceBox;
-	@FXML
 	private ChoiceBox<Preset> preset_choiceBox;
 	
 	@FXML
@@ -91,8 +81,7 @@ public class SousTitres_controller implements Initializable {
 
 	
 	private int derniere_ligne;
-	
-	
+
 	private Media media;
 	private MediaPlayer mediaplayer;
 	private MediaControl mediaControl;
@@ -129,12 +118,15 @@ public class SousTitres_controller implements Initializable {
 
 	private ImageView imv;
 	
-	private ObservableList<Allignement> observableAllignements;
 	private ObservableList<Preset> observablePresets;
 	
 	private Ligne ligne;
 	private Ligne lignePrecedente;
 	private Ligne ligneSuivante;
+	
+	private Ligne ligneLue;
+	
+	private ChangeListener<Preset> choiceBoxListener;
 	
 	public void onExport_button(){
 		
@@ -142,22 +134,6 @@ public class SousTitres_controller implements Initializable {
 		ExportASS.export_ass_file(lignes);
 		
 	}
-	
-//	public void onMotSelect(MouseEvent me){
-//		
-//		System.out.println(me.getSource());
-//		System.out.println(((Mot)me.getSource()).getLayoutX());
-//	}
-	
-//    public void onMotEnter(MouseEvent me){
-//		
-//		((Label)me.getSource()).setStyle("-fx-font-size:20; -fx-background-color: #dddddd ;");
-//	}
-//    
-//    public void onMotExit(MouseEvent me){
-//
-//    	((Label)me.getSource()).setStyle("-fx-font-size:20; -fx-background-color: #eeeeee;");
-//	}
     
     public void mot_lecture(Mot lu){
     	
@@ -171,28 +147,32 @@ public class SousTitres_controller implements Initializable {
     
     public void ligne_lecture(Ligne lu){
     	
+    	ligneLue = lu;
+    	
     	phrase_affichee.unbind();
     	phrase_affichee.bind(lu.getContenu_edite());
     	
     	text_sous_titre.setLayoutX((940 - text_sous_titre.getLayoutBounds().getWidth())/2);
-    	text_sous_titre.layoutYProperty().bind(lu.getLayoutY());
+    	
+    	preset_choiceBox.getSelectionModel().selectedItemProperty().removeListener(choiceBoxListener);
+    	preset_choiceBox.getSelectionModel().select(lu.getPlacement().getRect().getHeight() == 79 ? 0 : 1);
+    	preset_choiceBox.getSelectionModel().selectedItemProperty().addListener(choiceBoxListener);
+    	
+    	text_sous_titre.layoutYProperty().unbind();
+    	System.out.println(preset_choiceBox.getSelectionModel().getSelectedItem());
+    	text_sous_titre.layoutYProperty().bind(lu.getLayoutY(preset_choiceBox.getSelectionModel().getSelectedItem().getNom().equals("Centre sur synthé")));
+    	
+    	bloc_fx.heightProperty().unbind();
+    	bloc_fx.yProperty().unbind();
+    	
+    	bloc_fx.heightProperty().bind(lu.getPlacement().getRect().heightProperty());
+		bloc_fx.yProperty().bind(lu.getPlacement().getRect().yProperty());
+		
+		System.out.println(bloc_fx.getX() + ", " + bloc_fx.getY());
+		System.out.println(bloc_fx.getWidth() + " ," + bloc_fx.getHeight());
+		
     }
     
-    public void editer(Event e){
-    	
-//    	TextField textField = ((ButtonGrid) e.getSource()).getTextField();
-//    	Ligne ligne = ((ButtonGrid) e.getSource()).getLigne();
-//    	
-//    	StringProperty textEditable = textField.textProperty();
-//    	StringProperty textEdite = ligne.getContenu_edite();
-//
-//    	textEdite.unbind();
-//
-//    	textField.setText(textEdite.get());
-//    	
-//    	textEdite.bind(textEditable);
-    	
-    }
     
     public void ajout_ligne_dans_grille(Ligne ligne){
     	
@@ -211,7 +191,6 @@ public class SousTitres_controller implements Initializable {
 		a.setOnAction((e) -> sautLigne(e));
 		
 		b = new ButtonGrid(derniere_ligne, String.format("%03d >", ++derniere_ligne), a, b, c, d, lignes_grid, ligne);
-		b.setOnAction((e) -> editer(e));
 		
 		c = new TextArea();
 		c.setText(ligne.getContenu_edite().get());
@@ -320,11 +299,7 @@ public class SousTitres_controller implements Initializable {
     	}
     	lignePrecedente = ligne;
     	ligne = new Ligne(mots_ligne);
-	
-//    	System.out.println(ligne.toString());
-//    	System.out.println(ligne.getPremier_mot().getText() + " --> " + ligne.getDernier_mot().getText());
-//    	System.out.println("début : " + ligne.getDebut());
-//    	System.out.println(String.format("durée : %.02f", ligne.getDuree()));
+    	ligne.setPlacement(preset_choiceBox.getSelectionModel().getSelectedItem().getPlacement());
     	
     	ligne.setLigneprecedente(lignePrecedente);
     	
@@ -629,20 +604,41 @@ public class SousTitres_controller implements Initializable {
 		
 		flowpane.getChildren().addAll(mots_observables);
 		
-		
-		observableAllignements = FXCollections.observableArrayList(Allignement.values());
-		allignement_choiceBox.setItems(observableAllignements);
-		
 		observablePresets = FXCollections.observableArrayList();
 		preset_choiceBox.setItems(observablePresets);
 		
-		Placement p = new Placement();
-		p.setAllignement(Allignement.CENTRE);
-		p.setHaut(400);
-		p.setLateral(50);
-		observablePresets.add(new Preset(p, "Centre 1"));
-
 		
+		
+		Placement p1 = new Placement();
+		Rectangle bloc_fx1 = new Rectangle(20, 450, 960, 79);
+		p1.setRect(bloc_fx1);
+		p1.setAllignement(Allignement.CENTRE);
+		observablePresets.add(new Preset(p1, "Centre sur bandeau"));
+		
+		Placement p2 = new Placement();
+		Rectangle bloc_fx2 = new Rectangle(20, 450, 960, 46);
+		p2.setRect(bloc_fx2);
+		p2.setAllignement(Allignement.CENTRE);
+		observablePresets.add(new Preset(p2, "Centre sur synthé"));
+		
+		preset_choiceBox.getSelectionModel().select(0);
+		
+		choiceBoxListener = new ChangeListener<Preset>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Preset> observable, Preset oldValue, Preset newValue) {
+				
+				ligneLue.setPlacement(newValue.getPlacement());
+				for (double i = 0.01d; i < ligneLue.getDuree(); i+=0.01){
+					
+					map_des_lignes.replace(String.format("%.02f", ligneLue.getDebut() + i ).replace('.', ','), ligneLue);
+				}
+				
+				
+			}
+        };
+		
+		preset_choiceBox.getSelectionModel().selectedItemProperty().addListener(choiceBoxListener);
 
 	}
 
