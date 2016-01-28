@@ -12,7 +12,6 @@ public class Ligne_simple {
 	protected List<Mot_simple> simple_contenu;
 	
 	protected String simple_contenu_edite;
-	protected String simple_contenu_edite_backup;
 	
 	private Placement placement;
 	
@@ -23,14 +22,12 @@ public class Ligne_simple {
 	protected Mot_simple simple_dernierMot;
 	
 	private Ligne_simple simple_ligneSuivante = null;
-	//private Ligne_simple simple_ligneprecedente = null;
 
 	public Ligne_simple(List<Mot_simple> list) {
 		
 		this.simple_contenu = list;
 		this.placement = new Placement();
 		this.simple_contenu_edite = this.stringify();
-		this.simple_contenu_edite_backup = this.stringify();
 		this.premiereLigne = false;
 		this.deuxiemeLigne = false;
 		this.simple_premierMot = list.get(0);
@@ -132,14 +129,6 @@ public class Ligne_simple {
 	public void setDeuxiemeLigne(boolean deuxiemeLigne) {
 		this.deuxiemeLigne = deuxiemeLigne;
 	}
-
-	public String getSimpleContenu_edite_backup() {
-		return simple_contenu_edite_backup;
-	}
-
-	public void setSimpleContenu_edite_backup(String contenu_edite_backup) {
-		this.simple_contenu_edite_backup = contenu_edite_backup;
-	}
 	
 	public IntegerProperty getLayoutY(boolean synthe){
 		
@@ -160,7 +149,7 @@ public class Ligne_simple {
 	
 	public int getSize(){
 
-		Text text = new Text(simple_contenu_edite_backup);
+		Text text = new Text(simple_contenu_edite);
 		text.setFont(Font.font("Lucida", 25.0));
 
 		return (int) Math.round(text.getLayoutBounds().getWidth());

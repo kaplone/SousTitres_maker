@@ -130,7 +130,9 @@ public class SousTitres_controller implements Initializable {
 	
 	private Ligne ligne;
 	private Ligne lignePrecedente;
-	private Ligne ligneSuivante;
+	
+	private Ligne_simple ligne_simple;
+	private Ligne_simple ligne_simple_precedente;
 	
 	private Ligne ligneLue;
 	
@@ -310,12 +312,17 @@ public class SousTitres_controller implements Initializable {
     		mots_simples_ligne.add(mots.get(i).getMot_simple());
     	}
     	
-    	Ligne_simple ligne_simple = new Ligne_simple(mots_simples_ligne);
+    	ligne_simple_precedente = ligne_simple ;
+    	ligne_simple = new Ligne_simple(mots_simples_ligne);
     	
+    	if (ligne_simple_precedente != null) {
+    		ligne_simple_precedente.setSimpleLigneSuivante(ligne_simple);
+    	}
+
+    	ligne_simple.setSimplePlacement(preset_choiceBox.getSelectionModel().getSelectedItem().getPlacement());
     	
     	lignePrecedente = ligne;
     	ligne = new Ligne(mots_ligne, ligne_simple);
-    	ligne.getLigne_simple().setSimplePlacement(preset_choiceBox.getSelectionModel().getSelectedItem().getPlacement());
     	
     	ligne.setLigneprecedente(lignePrecedente);
     	
@@ -596,6 +603,8 @@ public class SousTitres_controller implements Initializable {
 					espace.setOnMouseClicked(a -> onEspaceSelect(a));
 					espace.setOnMouseEntered(a -> onEspaceEnter(a));
 					espace.setOnMouseExited(a -> onEspaceExit(a));
+					
+					
 			    	
 					mots.add(espace);
 				}

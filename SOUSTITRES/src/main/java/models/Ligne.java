@@ -30,7 +30,7 @@ public class Ligne{
 		super();
 		this.contenu = list;
 		this.contenu_edite = new SimpleStringProperty(ligne_simple.getSimpleContenu_edite());
-		this.contenu_edite_backup = new SimpleStringProperty(ligne_simple.getSimpleContenu_edite_backup());
+		this.contenu_edite_backup = new SimpleStringProperty(ligne_simple.getSimpleContenu_edite());
 		this.ligne_simple = ligne_simple;
 	}
 	
