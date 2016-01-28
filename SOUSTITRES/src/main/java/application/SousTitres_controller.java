@@ -46,16 +46,19 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import models.Allignement;
 import models.ButtonGrid;
 import models.Espace;
 import models.Ligne;
 import models.Mot;
-import models.Placement;
-import models.Preset;
+import models.Projet;
+import serializables.Ligne_simple;
+import serializables.Mot_simple;
+import serializables.Placement;
+import serializables.Preset;
 import utils.ExportASS;
 import utils.ExportSRT;
 import utils.MediaControl;
+import utils.SerialisationJson;
 
 public class SousTitres_controller implements Initializable {
 		
@@ -78,6 +81,9 @@ public class SousTitres_controller implements Initializable {
 	
 	@FXML
 	private GridPane lignes_grid;
+	
+	@FXML
+    private Button serialize_button;
 
 	
 	private int derniere_ligne;
@@ -94,11 +100,13 @@ public class SousTitres_controller implements Initializable {
 	private ObservableList<Label> mots_observables ;
 	private ArrayList<Mot> mots ;
 	private LinkedList<Ligne> lignes ;
+	private ArrayList<Ligne_simple> lignes_simples ;
 	
 	private int index_label;
 	
 	private Map<String, Mot> map_des_mots;
 	private Map<String, Ligne> map_des_lignes;
+	private Map<String, Ligne_simple> map_des_lignes_simples;
 	
 	private Mot mot_lu;
 	
@@ -125,6 +133,8 @@ public class SousTitres_controller implements Initializable {
 	private Ligne ligneSuivante;
 	
 	private Ligne ligneLue;
+	
+	private Projet projet;
 	
 	private ChangeListener<Preset> choiceBoxListener;
 	
@@ -155,7 +165,7 @@ public class SousTitres_controller implements Initializable {
     	text_sous_titre.setLayoutX((940 - text_sous_titre.getLayoutBounds().getWidth())/2);
     	
     	preset_choiceBox.getSelectionModel().selectedItemProperty().removeListener(choiceBoxListener);
-    	preset_choiceBox.getSelectionModel().select(lu.getPlacement().getRect().getHeight() == 79 ? 0 : 1);
+    	preset_choiceBox.getSelectionModel().select(lu.getLigne_simple().getSimplePlacement().getRect().getHeight() == 79 ? 0 : 1);
     	preset_choiceBox.getSelectionModel().selectedItemProperty().addListener(choiceBoxListener);
     	
     	text_sous_titre.layoutYProperty().unbind();
@@ -165,8 +175,8 @@ public class SousTitres_controller implements Initializable {
     	bloc_fx.heightProperty().unbind();
     	bloc_fx.yProperty().unbind();
     	
-    	bloc_fx.heightProperty().bind(lu.getPlacement().getRect().heightProperty());
-		bloc_fx.yProperty().bind(lu.getPlacement().getRect().yProperty());
+    	bloc_fx.heightProperty().bind(lu.getLigne_simple().getSimplePlacement().getRect().heightProperty());
+		bloc_fx.yProperty().bind(lu.getLigne_simple().getSimplePlacement().getRect().yProperty());
 		
 		System.out.println(bloc_fx.getX() + ", " + bloc_fx.getY());
 		System.out.println(bloc_fx.getWidth() + " ," + bloc_fx.getHeight());
@@ -294,12 +304,18 @@ public class SousTitres_controller implements Initializable {
     	}
     	
     	List<Mot> mots_ligne =  new ArrayList<>();
+    	List<Mot_simple> mots_simples_ligne =  new ArrayList<>();
     	for (int i = index_l; i < index_label; i++){
     		mots_ligne.add(mots.get(i));
+    		mots_simples_ligne.add(mots.get(i).getMot_simple());
     	}
+    	
+    	Ligne_simple ligne_simple = new Ligne_simple(mots_simples_ligne);
+    	
+    	
     	lignePrecedente = ligne;
-    	ligne = new Ligne(mots_ligne);
-    	ligne.setPlacement(preset_choiceBox.getSelectionModel().getSelectedItem().getPlacement());
+    	ligne = new Ligne(mots_ligne, ligne_simple);
+    	ligne.getLigne_simple().setSimplePlacement(preset_choiceBox.getSelectionModel().getSelectedItem().getPlacement());
     	
     	ligne.setLigneprecedente(lignePrecedente);
     	
@@ -309,10 +325,14 @@ public class SousTitres_controller implements Initializable {
 
     	map_des_lignes.put(String.format("%.02f", ligne.getDebut()), ligne);
     	lignes.add(ligne);
+    	
+    	lignes_simples.add(ligne_simple);
+    	map_des_lignes_simples.put(String.format("%.02f", ligne.getDebut()), ligne_simple);
 		
 		for (double i = 0.01d; i < ligne.getDuree(); i+=0.01){
 			
 			map_des_lignes.put(String.format("%.02f", ligne.getDebut() + i ).replace('.', ','), ligne);
+			map_des_lignes_simples.put(String.format("%.02f", ligne.getDebut()), ligne_simple);
 		}
 		
 		ajout_ligne_dans_grille(ligne);
@@ -380,7 +400,7 @@ public class SousTitres_controller implements Initializable {
 			
 		if ( ((ImageView) bg.getGraphic()).getImage().equals(IMG_LIGNE)){
 				
-			if (! lignePrecedente.isDeuxiemeLigne() && ! l.isPremiereLigne()){
+			if (! lignePrecedente.getLigne_simple().isDeuxiemeLigne() && ! l.getLigne_simple().isPremiereLigne()){
 				ImageView im = new ImageView(IMG_FICHIER);
 				im.setPreserveRatio(true);
 				im.setFitHeight(16);
@@ -390,8 +410,8 @@ public class SousTitres_controller implements Initializable {
 				gp.getChildren().get(indice + 1).setStyle("-fx-background-color: linear-gradient(#999999, #bbbbbb);");
 				
 				// changement des drapeaux
-				l.setDeuxiemeLigne(true);
-				lignePrecedente.setPremiereLigne(true);	
+				l.getLigne_simple().setDeuxiemeLigne(true);
+				lignePrecedente.getLigne_simple().setPremiereLigne(true);	
 				
 				// copie en backup des contenus étités
 				l.getContenu_edite_backup().set(l.getContenu_edite().get());
@@ -460,8 +480,8 @@ public class SousTitres_controller implements Initializable {
 			gp.getChildren().get(indice + 1).setStyle("-fx-background-color: linear-gradient(#61a2b1, #2A5058);");
 			
 			// changement des drapeaux
-			l.setDeuxiemeLigne(false);
-			lignePrecedente.setPremiereLigne(false);			
+			l.getLigne_simple().setDeuxiemeLigne(false);
+			lignePrecedente.getLigne_simple().setPremiereLigne(false);			
 			
 			// unbind pour pouvoir setter
 			l.getContenu_edite().unbind();
@@ -497,16 +517,21 @@ public class SousTitres_controller implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 		
 		lignes = new LinkedList<Ligne>();
+		lignes_simples = new ArrayList<Ligne_simple>();
 		
 		derniere_ligne = 0;
 		lignes_grid.setVgap(5);
 	
 		phrase_affichee = new SimpleObjectProperty<>();
 		
-		point_d_entree = new SimpleDoubleProperty();
+		point_d_entree = new SimpleDoubleProperty();	
 		
-		//media = new Media("file:///home/autor/Main_18H39_vGood.mp4");
-		media = new Media("file:///home/autor/Desktop/CASTOARCHI_VCASTO_MASTER.mp4");
+		projet = new Projet();
+		projet.setXml("/mnt/nfs_public/pour David/TRANSCRIPTION/vocapia/CASTOARCHI_VCASTO_MASTER_sous_titres_v2.xml");
+		projet.setVideo("file:///home/autor/Desktop/CASTOARCHI_VCASTO_MASTER.mp4");
+		projet.setNom("projet 1");
+		
+		media = new Media(projet.getVideo());
 		mediaplayer = new MediaPlayer(media);
 		mediaControl = new MediaControl(mediaplayer, this);
 		
@@ -553,12 +578,13 @@ public class SousTitres_controller implements Initializable {
 
 		map_des_mots = new TreeMap<>();		
 		map_des_lignes = new TreeMap<>();	
+		map_des_lignes_simples = new TreeMap<>();	
 	
 		mots_observables = FXCollections.observableArrayList();
 		mots = new ArrayList<>();
 		
 		try {
-			$(new File("/mnt/nfs_public/pour David/TRANSCRIPTION/vocapia/CASTOARCHI_VCASTO_MASTER_sous_titres_v2.xml")).find("Word")
+			$(new File(projet.getXml())).find("Word")
 			.each(ctx -> {
 				
 				if (debut_texte){
@@ -612,13 +638,11 @@ public class SousTitres_controller implements Initializable {
 		Placement p1 = new Placement();
 		Rectangle bloc_fx1 = new Rectangle(20, 450, 960, 79);
 		p1.setRect(bloc_fx1);
-		p1.setAllignement(Allignement.CENTRE);
 		observablePresets.add(new Preset(p1, "Centre sur bandeau"));
 		
 		Placement p2 = new Placement();
 		Rectangle bloc_fx2 = new Rectangle(20, 450, 960, 46);
 		p2.setRect(bloc_fx2);
-		p2.setAllignement(Allignement.CENTRE);
 		observablePresets.add(new Preset(p2, "Centre sur synthé"));
 		
 		preset_choiceBox.getSelectionModel().select(0);
@@ -628,7 +652,7 @@ public class SousTitres_controller implements Initializable {
 			@Override
 			public void changed(ObservableValue<? extends Preset> observable, Preset oldValue, Preset newValue) {
 				
-				ligneLue.setPlacement(newValue.getPlacement());
+				ligneLue.getLigne_simple().setSimplePlacement(newValue.getPlacement());
 				for (double i = 0.01d; i < ligneLue.getDuree(); i+=0.01){
 					
 					map_des_lignes.replace(String.format("%.02f", ligneLue.getDebut() + i ).replace('.', ','), ligneLue);
@@ -639,6 +663,31 @@ public class SousTitres_controller implements Initializable {
         };
 		
 		preset_choiceBox.getSelectionModel().selectedItemProperty().addListener(choiceBoxListener);
+		
+		//mock
+		ArrayList<Ligne_simple> lignes_simples_mock = new ArrayList<>();
+		Mot_simple mot_simple_mock = new Mot_simple("uuuuu", 3.2, 1.5, false);
+		ArrayList<Mot_simple> mots_simples_mock = new ArrayList<>();
+		mots_simples_mock.add(mot_simple_mock);
+		Ligne_simple ligne_mock = new Ligne_simple(mots_simples_mock);
+		Placement placement_mock = new Placement();
+		placement_mock.setHaut(254);
+		placement_mock.setLateral(444);
+		placement_mock.setRect(new Rectangle(20, 450, 960, 79));
+		placement_mock.setCouleur_rectangle(new double [] {1.0d, 1.0d, 1.0d, 0.7d});
+		ligne_mock.setSimplePlacement(placement_mock);
+		lignes_simples_mock.add(ligne_mock);
+		
+		Map<String, Ligne_simple> map_des_lignes_simples_mock = new TreeMap<>();
+		map_des_lignes_simples_mock.put("ttt", new Ligne_simple(mots_simples_mock));
+		
+		
+		serialize_button.setOnAction(a-> {
+			                              projet.setPremiere_ligne(lignes_simples.get(0));
+                                          SerialisationJson.serialise(projet);
+		});
+		
+		
 
 	}
 
@@ -646,7 +695,7 @@ public class SousTitres_controller implements Initializable {
 		return map_des_mots;
 	}
 
-	public void setMap_des_mots(Map<String, Mot> map_des_lignes) {
+	public void setMap_des_mots(Map<String, Mot> map_des_mots) {
 		this.map_des_mots = map_des_mots;
 	}
 	

@@ -42,10 +42,10 @@ public class ExportASS {
 		    for (Ligne l : lignes){
 
 		    	
-		    	String contenu = l.getContenu()
-		    			          .stream()
-		    			          .map(a -> a.getText())
-		    			          .collect(Collectors.joining());
+//		    	String contenu = l.getContenu()
+//		    			          .stream()
+//		    			          .map(a -> a.getText())
+//		    			          .collect(Collectors.joining());
 		    	
 		    	String debut = l.getDebut() + "";
 		    	
@@ -84,7 +84,7 @@ public class ExportASS {
 	    		fw.write("Dialogue: 0,");
 	    		fw.write(temporalite);
 	    		fw.write(",Simple,,0,0,20,,");
-	    		fw.write(contenu);
+	    		//fw.write(contenu);
 	    		fw.write(System.getProperty("line.separator"));
 	    	}
 		    

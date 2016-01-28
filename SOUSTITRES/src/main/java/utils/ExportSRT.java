@@ -28,10 +28,10 @@ public class ExportSRT {
 		    for (Ligne l : lignes){
 
 		    	
-		    	String contenu = l.getContenu()
-		    			          .stream()
-		    			          .map(a -> a.getText())
-		    			          .collect(Collectors.joining());
+//		    	String contenu = l.getContenu()
+//		    			          .stream()
+//		    			          .map(a -> a.getText())
+//		    			          .collect(Collectors.joining());
 		    	
 		    	String debut = l.getDebut() + "";
 		    	
@@ -71,7 +71,7 @@ public class ExportSRT {
 	    		fw.write(System.getProperty("line.separator"));
 	    		fw.write(temporalite);
 	    		fw.write(System.getProperty("line.separator"));
-	    		fw.write(contenu);
+	    		//fw.write(contenu);
 	    		fw.write(System.getProperty("line.separator"));
 	    		fw.write(System.getProperty("line.separator"));
 	    		

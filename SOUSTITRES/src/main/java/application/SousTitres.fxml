@@ -67,7 +67,7 @@
 </bottom>
 <top><VBox prefHeight="62.0" prefWidth="1290.0" BorderPane.alignment="CENTER">
 <children><HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0">
-<children><HBox prefHeight="100.0" prefWidth="200.0">
+<children><Button fx:id="serialize_button" mnemonicParsing="false" text="Serialize" /><HBox prefHeight="100.0" prefWidth="200.0">
 <HBox.margin>
 <Insets bottom="10.0" right="30.0" top="10.0" />
 </HBox.margin></HBox>

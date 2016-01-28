@@ -9,37 +9,29 @@ import javafx.beans.property.StringProperty;
 import javafx.scene.control.TextArea;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import serializables.Ligne_simple;
+import serializables.Mot_simple;
 
-public class Ligne {
-
+public class Ligne{
+     
 	private List<Mot> contenu;
 	
 	private StringProperty contenu_edite;
 	private StringProperty contenu_edite_backup;
 	
-	private Placement placement;
-	
-	private boolean premiereLigne;
-	private boolean deuxiemeLigne;
-	
-	private Mot premierMot;
-	private Mot dernierMot;
-	
 	private Ligne ligneSuivante = null;
 	private Ligne ligneprecedente = null;
-	
-	private TextArea tf;
 
-	public Ligne(List<Mot> list) {
+	private TextArea tf;
+	
+	private Ligne_simple ligne_simple;
+
+	public Ligne(List<Mot> list, Ligne_simple ligne_simple) {
 		super();
 		this.contenu = list;
-		this.placement = new Placement();
-		this.contenu_edite = new SimpleStringProperty(this.stringify());
-		this.contenu_edite_backup = new SimpleStringProperty(this.stringify());
-		this.premiereLigne = false;
-		this.deuxiemeLigne = false;
-		this.premierMot = list.get(0);
-		this.dernierMot = list.get(contenu.size() -1);
+		this.contenu_edite = new SimpleStringProperty(ligne_simple.getSimpleContenu_edite());
+		this.contenu_edite_backup = new SimpleStringProperty(ligne_simple.getSimpleContenu_edite_backup());
+		this.ligne_simple = ligne_simple;
 	}
 	
 	public List<Mot> getContenu() {
@@ -48,7 +40,7 @@ public class Ligne {
 	
 	public double getDebut() {
 
-		return premierMot.getDebut();
+		return this.ligne_simple.getPremier_mot().getDebut();
 
 	}
 	
@@ -60,13 +52,7 @@ public class Ligne {
 	public String toString() {
 		
 		return this.contenu_edite.get();
-		
-//		String ligne = "";
-//		
-//		for (Mot m : contenu){
-//			ligne += m.getText();
-//		}
-//		return ligne;
+
 	}	
 	
 	public String stringify() {
@@ -74,38 +60,20 @@ public class Ligne {
 		
 		String ligne = "";
 		
-		for (Mot m : contenu){
-			ligne += m.getText();
+		for (Mot_simple m : ligne_simple.getContenu()){
+			ligne += m.getContenu();
 		}
 		return ligne;
 	}
 	
 	public double getDuree() {
 		
-		if (this.isPremiereLigne()){
-			return ligneSuivante.getDernier_mot().getDebut() + ligneSuivante.getDernier_mot().getDuree() - premierMot.getDebut();
+		if (this.ligne_simple.isPremiereLigne()){
+			return ligneSuivante.ligne_simple.getDernier_mot().getDebut() + ligneSuivante.ligne_simple.getDernier_mot().getDuree() - ligne_simple.getPremier_mot().getDebut();
 		}
 		else {
-			return dernierMot.getDebut()+ dernierMot.getDuree() - premierMot.getDebut();
-		}
-
-		
-	}
-
-	public Mot getPremier_mot() {
-		return contenu.get(0);
-	}
-
-	public Mot getDernier_mot() {
-		return dernierMot;
-	}
-
-	public Placement getPlacement() {
-		return placement;
-	}
-
-	public void setPlacement(Placement placement) {
-		this.placement = placement;
+			return ligne_simple.getDernier_mot().getDebut()+ ligne_simple.getDernier_mot().getDuree() - ligne_simple.getPremier_mot().getDebut();
+		}	
 	}
 
 	public StringProperty getContenu_edite() {
@@ -132,22 +100,6 @@ public class Ligne {
 		this.ligneprecedente = ligneprecedente;
 	}
 
-	public boolean isPremiereLigne() {
-		return premiereLigne;
-	}
-
-	public void setPremiereLigne(boolean premiereLigne) {
-		this.premiereLigne = premiereLigne;
-	}
-
-	public boolean isDeuxiemeLigne() {
-		return deuxiemeLigne;
-	}
-
-	public void setDeuxiemeLigne(boolean deuxiemeLigne) {
-		this.deuxiemeLigne = deuxiemeLigne;
-	}
-
 	public StringProperty getContenu_edite_backup() {
 		return contenu_edite_backup;
 	}
@@ -170,7 +122,7 @@ public class Ligne {
 			return new SimpleIntegerProperty(482);
 		}
 		else {
-			if (this.premiereLigne){
+			if (this.ligne_simple.isPremiereLigne()){
 				return new SimpleIntegerProperty(485);
 			}
 			else {
@@ -190,5 +142,15 @@ public class Ligne {
 		
 		
 	}
+
+	public Ligne_simple getLigne_simple() {
+		return ligne_simple;
+	}
+
+	public void setLigne_simple(Ligne_simple ligne_simple) {
+		this.ligne_simple = ligne_simple;
+	}
+	
+	
 
 }
