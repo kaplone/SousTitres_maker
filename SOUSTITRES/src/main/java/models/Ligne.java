@@ -150,7 +150,29 @@ public class Ligne{
 	public void setLigne_simple(Ligne_simple ligne_simple) {
 		this.ligne_simple = ligne_simple;
 	}
-	
-	
+
+	public double getAlpha(double tc) {
+		
+		
+		return 1;
+		
+		
+//		System.out.println("tc :  " + tc);
+//		System.out.println("getDebut() :  " + getDebut());
+//		System.out.println("getDuree :  " + getDuree());
+//
+//		
+//		
+//		if (tc - getDebut() <= 0.1){
+//			return (tc - getDebut()) * 10 ;
+//		}
+//		else if (getDebut() + getDuree() - tc <= 0.1 ){
+//			return (getDebut() + getDuree() - tc) * 10;
+//		}
+//		else {
+//			return 1;
+//		}
+		
+	}	
 
 }

@@ -40,6 +40,50 @@ public class ExportASS {
 		    fw.write(s);
 		    
 		    for (Ligne l : lignes){
+		    	
+		    	if ( ! "".equals(l.getContenu_edite().get().trim())){
+		    		
+		    		String debut = l.getDebut() + "";
+			    	
+			    	String fin = (l.getDebut() + l.getDuree()) + "";
+			    	
+			    	String debut_secondes;
+			    	String debut_minutes;
+			    	
+			    	String fin_secondes;
+			    	String fin_minutes;
+			    	
+			    	int debut_centiemes = Integer.parseInt(debut.split("\\.")[1].substring(0, debut.split("\\.").length -1));
+			    	
+			    	if (debut.split("\\.")[0].split(":").length > 1){		    	
+				    	debut_secondes = debut.split("\\.")[0].split(":")[1];
+				    	debut_minutes = debut.split("\\.")[0].split(":")[0];
+			    	}
+			    	else {
+			    		debut_secondes = debut.split("\\.")[0].split(":")[0];
+			    		debut_minutes = "00";
+			    	}
+			    	
+			    	int fin_centiemes = Integer.parseInt(fin.split("\\.")[1].substring(0, fin.split("\\.").length -1));
+			    	
+			    	if (fin.split("\\.")[0].split(":").length > 1){	
+			    	   fin_secondes = fin.split("\\.")[0].split(":")[1];
+			    	   fin_minutes = fin.split("\\.")[0].split(":")[0];
+			    	}
+			    	else {
+			    		fin_secondes = fin.split("\\.")[0].split(":")[0];
+				    	fin_minutes = "00";
+			    	}
+			    		
+			    	String temporalite = String.format("0:%s:%s.%02d,0:%s:%s.%02d", debut_minutes, debut_secondes, debut_centiemes, fin_minutes, fin_secondes, fin_centiemes);
+
+		    		fw.write("Dialogue: 0,");
+		    		fw.write(temporalite);
+		    		fw.write(",Simple,,0,0,20,,");
+		    		fw.write(l.getContenu_edite().get().replace("\n", "\\N"));
+		    		fw.write(System.getProperty("line.separator"));
+		    		
+		    	}
 
 		    	
 //		    	String contenu = l.getContenu()
@@ -47,45 +91,7 @@ public class ExportASS {
 //		    			          .map(a -> a.getText())
 //		    			          .collect(Collectors.joining());
 		    	
-		    	String debut = l.getDebut() + "";
 		    	
-		    	String fin = (l.getDebut() + l.getDuree()) + "";
-		    	
-		    	String debut_secondes;
-		    	String debut_minutes;
-		    	
-		    	String fin_secondes;
-		    	String fin_minutes;
-		    	
-		    	int debut_centiemes = Integer.parseInt(debut.split("\\.")[1].substring(0, debut.split("\\.").length -1));
-		    	
-		    	if (debut.split("\\.")[0].split(":").length > 1){		    	
-			    	debut_secondes = debut.split("\\.")[0].split(":")[1];
-			    	debut_minutes = debut.split("\\.")[0].split(":")[0];
-		    	}
-		    	else {
-		    		debut_secondes = debut.split("\\.")[0].split(":")[0];
-		    		debut_minutes = "00";
-		    	}
-		    	
-		    	int fin_centiemes = Integer.parseInt(fin.split("\\.")[1].substring(0, fin.split("\\.").length -1));
-		    	
-		    	if (fin.split("\\.")[0].split(":").length > 1){	
-		    	   fin_secondes = fin.split("\\.")[0].split(":")[1];
-		    	   fin_minutes = fin.split("\\.")[0].split(":")[0];
-		    	}
-		    	else {
-		    		fin_secondes = fin.split("\\.")[0].split(":")[0];
-			    	fin_minutes = "00";
-		    	}
-		    		
-		    	String temporalite = String.format("0:%s:%s.%02d,0:%s:%s.%02d", debut_minutes, debut_secondes, debut_centiemes, fin_minutes, fin_secondes, fin_centiemes);
-
-	    		fw.write("Dialogue: 0,");
-	    		fw.write(temporalite);
-	    		fw.write(",Simple,,0,0,20,,");
-	    		//fw.write(contenu);
-	    		fw.write(System.getProperty("line.separator"));
 	    	}
 		    
 		 	fw.flush();

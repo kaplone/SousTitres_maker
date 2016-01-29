@@ -71,7 +71,11 @@ public class SousTitres_controller implements Initializable {
 	private Rectangle bloc_fx;
 	
 	@FXML
-	private Button export_button;
+	private Button export_mp4_button;
+	@FXML
+	private Button export_srt_button;
+	@FXML
+	private Button export_ass_button;
 	
 	@FXML
 	private VBox index_vbox;
@@ -140,13 +144,8 @@ public class SousTitres_controller implements Initializable {
 	
 	private ChangeListener<Preset> choiceBoxListener;
 	
-	public void onExport_button(){
-		
-		ExportSRT.export_srt_file(lignes);
-		ExportASS.export_ass_file(lignes);
-		
-	}
-    
+	private DoubleProperty alphaTexte;
+
     public void mot_lecture(Mot lu){
     	
     	lu.setStyle("-fx-font-size:20; -fx-background-color: #aa88dd ;");
@@ -157,7 +156,7 @@ public class SousTitres_controller implements Initializable {
     	mot_lu = lu;
     }
     
-    public void ligne_lecture(Ligne lu){
+    public void ligne_lecture(Ligne lu, double tc){
     	
     	ligneLue = lu;
     	
@@ -180,8 +179,8 @@ public class SousTitres_controller implements Initializable {
     	bloc_fx.heightProperty().bind(lu.getLigne_simple().getSimplePlacement().getRect().heightProperty());
 		bloc_fx.yProperty().bind(lu.getLigne_simple().getSimplePlacement().getRect().yProperty());
 		
-		System.out.println(bloc_fx.getX() + ", " + bloc_fx.getY());
-		System.out.println(bloc_fx.getWidth() + " ," + bloc_fx.getHeight());
+		alphaTexte.set(lu.getAlpha(tc));
+
 		
     }
     
@@ -321,6 +320,9 @@ public class SousTitres_controller implements Initializable {
 
     	ligne_simple.setSimplePlacement(preset_choiceBox.getSelectionModel().getSelectedItem().getPlacement());
     	
+    	double [] couleur = new double [] {1.0d, 1.0d, 1.0d, 0.7d};
+    	ligne_simple.getSimplePlacement().setCouleur_rectangle(couleur);
+    	
     	lignePrecedente = ligne;
     	ligne = new Ligne(mots_ligne, ligne_simple);
     	
@@ -340,6 +342,7 @@ public class SousTitres_controller implements Initializable {
 			
 			map_des_lignes.put(String.format("%.02f", ligne.getDebut() + i ).replace('.', ','), ligne);
 			map_des_lignes_simples.put(String.format("%.02f", ligne.getDebut()), ligne_simple);
+			
 		}
 		
 		ajout_ligne_dans_grille(ligne);
@@ -574,10 +577,13 @@ public class SousTitres_controller implements Initializable {
 		text_sous_titre.setFont(Font.font("Lucida", 25.0));
 		//text_sous_titre.setFill(Color.WHITE);
 		text_sous_titre.setFill(Color.BLACK);
-		text_sous_titre.setLayoutX(100);
-		text_sous_titre.setLayoutY(515);
+		//text_sous_titre.setLayoutX(100);
+		//text_sous_titre.setLayoutY(515);
 		text_sous_titre.setVisible(true);
 		text_sous_titre.toFront();
+		
+		alphaTexte = new SimpleDoubleProperty(1.0);
+		text_sous_titre.opacityProperty().bind(alphaTexte);
 		
 		text_sous_titre.textProperty().bind(phrase_affichee);
 			
@@ -680,8 +686,8 @@ public class SousTitres_controller implements Initializable {
 		mots_simples_mock.add(mot_simple_mock);
 		Ligne_simple ligne_mock = new Ligne_simple(mots_simples_mock);
 		Placement placement_mock = new Placement();
-		placement_mock.setHaut(254);
-		placement_mock.setLateral(444);
+		//placement_mock.setHaut(254);
+		//placement_mock.setLateral(444);
 		placement_mock.setRect(new Rectangle(20, 450, 960, 79));
 		placement_mock.setCouleur_rectangle(new double [] {1.0d, 1.0d, 1.0d, 0.7d});
 		ligne_mock.setSimplePlacement(placement_mock);
@@ -695,6 +701,10 @@ public class SousTitres_controller implements Initializable {
 			                              projet.setPremiere_ligne(lignes_simples.get(0));
                                           SerialisationJson.serialise(projet);
 		});
+		
+		export_ass_button.setOnAction(a -> ExportASS.export_ass_file(lignes));
+		//export_srt_button.setOnAction(a -> ExportSRT.export_srt_file(lignes));
+		//export_mp4_button.setOnAction(a -> ExportMP4.export_mp4_file(lignes));
 		
 		
 

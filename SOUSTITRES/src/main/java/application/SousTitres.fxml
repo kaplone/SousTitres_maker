@@ -48,13 +48,13 @@
 </children>
 <padding>
 <Insets right="400.0" />
-</padding></VBox><Button mnemonicParsing="false" prefHeight="25.0" prefWidth="189.0" text="exporter le .MP4">
+</padding></VBox><Button fx:id="export_mp4_button" mnemonicParsing="false" prefHeight="25.0" prefWidth="189.0" text="exporter le .MP4">
 <HBox.margin>
 <Insets right="20.0" />
-</HBox.margin></Button><Button mnemonicParsing="false" prefHeight="25.0" prefWidth="186.0" text="exporter le .ASS">
+</HBox.margin></Button><Button fx:id="export_ass_button" mnemonicParsing="false" prefHeight="25.0" prefWidth="186.0" text="exporter le .ASS">
 <HBox.margin>
 <Insets right="20.0" />
-</HBox.margin></Button><Button fx:id="export_button" mnemonicParsing="false" onAction="#onExport_button" prefHeight="25.0" prefWidth="204.0" text="exporter le .SRT">
+</HBox.margin></Button><Button fx:id="export_srt_button" mnemonicParsing="false" prefHeight="25.0" prefWidth="204.0" text="exporter le .SRT">
 <HBox.margin>
 <Insets right="50.0" />
 </HBox.margin></Button>

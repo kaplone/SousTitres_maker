@@ -26,7 +26,7 @@ public class Ligne_simple {
 	public Ligne_simple(List<Mot_simple> list) {
 		
 		this.simple_contenu = list;
-		this.placement = new Placement();
+		//this.placement = new Placement();
 		this.simple_contenu_edite = this.stringify();
 		this.premiereLigne = false;
 		this.deuxiemeLigne = false;
