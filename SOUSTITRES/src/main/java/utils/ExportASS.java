@@ -79,7 +79,7 @@ public class ExportASS {
 
 		    		fw.write("Dialogue: 0,");
 		    		fw.write(temporalite);
-		    		fw.write(",Simple,,0,0,20,,");
+		    		fw.write(",Simple,,0,0,50,,");
 		    		fw.write(l.getContenu_edite().get().replace("\n", "\\N"));
 		    		fw.write(System.getProperty("line.separator"));
 		    		

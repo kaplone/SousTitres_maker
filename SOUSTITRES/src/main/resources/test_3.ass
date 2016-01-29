@@ -12,15 +12,13 @@ PlayResY: 288
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
 Style: Default,Arial,16,&Hffffff,&Hffffff,&H0,&H0,0,0,0,0,100,100,0,0,1,1,0,2,10,10,10,0
-Style: Simple,Arial,18,&Hffffff,&Hffffff,&H0,&H0,0,0,0,0,100,100,0,0,0,0,0,2,10,10,10,0
+Style: Simple,Arial,14,&H0,&H0,&HF,&HF,0,0,0,0,100,100,0,0,0,0,0,2,10,10,10,0
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
-Dialogue: 0,0:00:7.02,0:00:8.03,Simple,,0,0,20,,Les études le montrent :
-Dialogue: 0,0:00:8.03,0:00:9.02,Simple,,0,0,20,,les Français passent en
-Dialogue: 0,0:00:9.02,0:00:10.05,Simple,,0,0,20,,moyenne 18 heures 39
-Dialogue: 0,0:00:10.05,0:00:12.04,Simple,,0,0,20,,par jour sur l'ensemble de la semaine,
-Dialogue: 0,0:00:12.04,0:00:15.03,Simple,,0,0,20,,chez eux, ces chiffres fait réfléchir, non,
-Dialogue: 0,0:00:15.03,0:00:17.09,Simple,,0,0,20,,c'est tout l'objet du nouveau rendez- vous créé par Castorama
-Dialogue: 0,0:00:19.01,0:00:21.00,Simple,,0,0,20,,ancré dans la réalité et la vie des gens
-Dialogue: 0,0:00:21.01,0:00:23.00,Simple,,0,0,20,,le site 18 heures 39 point FR
+Dialogue: 0,0:00:1.09,0:00:3.04,Simple,,0,0,50,,Castorama oeuvre depuis presque
+Dialogue: 0,0:00:3.05,0:00:5.07,Simple,,0,0,50,,50 ans à l'amélioration de la maison,
+Dialogue: 0,0:00:5.07,0:00:7.04,Simple,,0,0,50,,l'Immobilière Castorama a saisi
+Dialogue: 0,0:00:7.05,0:00:9.04,Simple,,0,0,50,,opportunité de l'étude du transfert
+Dialogue: 0,0:00:9.04,0:00:10.08,Simple,,0,0,50,,du magasin de Lille, Hellemmes
+Dialogue: 0,0:00:10.09,0:00:12.06,Simple,,0,0,50,,pour organiser un concours ouvert

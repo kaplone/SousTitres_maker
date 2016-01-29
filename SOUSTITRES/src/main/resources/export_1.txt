@@ -1,0 +1,9 @@
+ffmpeg \
+-i '/home/autor/Desktop/CASTOARCHI_VCASTO_MASTER.mp4' \
+-i '/home/autor/Desktop/bandeau61.png' \
+-i '/home/autor/Desktop/bandeau32.png' \
+-filter_complex "overlay=0:532:enable='between(t,1,3)',overlay=0:532:enable='between(t,24,29)'" \
+-vcodec mpeg2video -q:v 0 -f mpeg2video - | ffmpeg -y \
+-i -  -vf ass='/home/autor/Desktop/test_3.ass' \
+-vcodec mpeg2video -q:v 0 \
+'/home/autor/Desktop/CASTOARCHI_VCASTO_MASTER_ss2.mpg'
