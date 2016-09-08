@@ -15,10 +15,10 @@ import models.Ligne;
 public class ExportASS {
 	
 	static String home =  System.getProperty("user.home");
-	static File ass_file = new File(home, "Desktop/test_3.ass");
+	static File ass_file = new File(home, "Desktop/CASTO_Sous_titres/test_3.ass");
 	static FileWriter fw = null;
 	
-	static File base_file = new File(home, "Desktop/base.ass");
+	static File base_file = new File(home, "Desktop/CASTO_Sous_titres/base.ass");
 	static FileReader fr = null;
 	
 	

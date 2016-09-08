@@ -11,10 +11,11 @@
       <artifactId>joox</artifactId>
       <version>1.2.0</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/de.codecentric.centerdevice/javafxsvg -->
     <dependency>
-        <groupId>de.codecentric.centerdevice</groupId>
-        <artifactId>javafxsvg</artifactId>
-        <version>1.0.0</version>
+       <groupId>de.codecentric.centerdevice</groupId>
+       <artifactId>javafxsvg</artifactId>
+        <version>1.2.1</version>
     </dependency>
     <dependency>
 	 <groupId>com.fasterxml.jackson.core</groupId>

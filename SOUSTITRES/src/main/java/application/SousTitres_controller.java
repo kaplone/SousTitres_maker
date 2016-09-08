@@ -537,8 +537,8 @@ public class SousTitres_controller implements Initializable {
 		point_d_entree = new SimpleDoubleProperty();	
 		
 		projet = new Projet();
-		projet.setXml("/mnt/nfs_public/pour David/TRANSCRIPTION/vocapia/CASTOARCHI_VCASTO_MASTER_sous_titres_v2.xml");
-		projet.setVideo("file:///home/autor/Desktop/CASTOARCHI_VCASTO_MASTER.mp4");
+		projet.setXml("/mnt/nfs_public/pour David/transcriptions/CASTOARCHI_VCASTO_MASTER_sous_titres_v2.xml");
+		projet.setVideo("file:///home/autor/Desktop/CASTO_Sous_titres/CASTOARCHI_VCASTO_MASTER.mp4");
 		projet.setNom("projet 1");
 		
 		media = new Media(projet.getVideo());
