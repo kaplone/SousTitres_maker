@@ -29,3 +29,16 @@ la présentation par défaut à chaque sélection d'une césure, est sur une lig
 Dans la boite des sous-titres, le bouton à gauche du texte (retour chariot violet) permet de le lier à la boite située au dessus.
 Le bouton en forme de feuille qui apparait alors permet de rétablir le texte sur une ligne.
 ![fenêtre principale](SOUS-TITRES_MAKER_06.png)
+
+####correction du texte####
+Les correcttions apportées dans ls boites des sous-titres sont immédiatement répercutées dans les sous-titres affichés sur la vidéo.
+![fenêtre principale](SOUS-TITRES_MAKER_07.png)
+
+####presets####
+Il est possible de définir des modes de placement du texte et des bandeaux de tailles et de position différents.
+En choisissant le preset dans la liste, on mets rapidement en forme ses sous-titres.
+![fenêtre principale](SOUS-TITRES_MAKER_08.png)
+![fenêtre principale](SOUS-TITRES_MAKER_09.png)
+
+#### nouvelle correction du texte####
+![fenêtre principale](SOUS-TITRES_MAKER_10.png)
